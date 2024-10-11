@@ -1188,7 +1188,7 @@ get_coeff_from_angle_countour(Point& point, const ExPolygon& contour, coord_t mi
         Point point_before = id_near == 0 ? contour.contour.points.back() : contour.contour.points[id_near - 1];
         Point point_after = id_near == contour.contour.points.size() - 1 ? contour.contour.points.front() : contour.contour.points[id_near + 1];
         double angle2 = std::min(point_nearest.ccw_angle(point_before, point_after), point_nearest.ccw_angle(point_after, point_before));
-        angle2 = abs(angle - PI / 2);
+        angle2 = abs(angle2 - PI / 2);
         angle = (angle + angle2) / 2;
     }
 
@@ -3177,7 +3177,11 @@ unsafe_variable_width(const ThickPolyline& polyline, const ExtrusionRole role, c
 
         if (path.polyline.empty()) {
             if (wanted_width != current_flow.width()) {
-                current_flow = current_flow.with_width((float)wanted_width);
+                if (current_flow.bridge()) {
+                    current_flow = Flow::bridging_flow(current_flow.height(), (float) wanted_width);
+                } else {
+                    current_flow = current_flow.with_width((float) wanted_width);
+                }
             }
             path.polyline.append(line.a);
             path.polyline.append(line.b);
@@ -3198,7 +3202,11 @@ unsafe_variable_width(const ThickPolyline& polyline, const ExtrusionRole role, c
                 paths.push_back(path);
                 path = ExtrusionPath(role, false);
                 if (wanted_width != current_flow.width()) {
-                    current_flow = current_flow.with_width(wanted_width);
+                    if (current_flow.bridge()) {
+                        current_flow = Flow::bridging_flow(current_flow.height(), (float) wanted_width);
+                    } else {
+                        current_flow = current_flow.with_width((float) wanted_width);
+                    }
                 }
                 path.polyline.append(line.a);
                 path.polyline.append(line.b);
