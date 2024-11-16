@@ -68,6 +68,18 @@ document first!
 * `utils/`: various useful scripts
 * `src/libslic3r/`: C++ sources for libslic3r
 
+### New Workflow for add-velocity-extrusion Branch
+
+A new GitHub Actions workflow has been added to build the `add-velocity-extrusion` branch on push and pull request events. This workflow compiles the Windows x64 build and uploads the build artifacts.
+
+#### How to Trigger the Workflow
+
+The workflow is automatically triggered on push and pull request events for the `add-velocity-extrusion` branch. You do not need to manually trigger it.
+
+#### Where to Find the Build Artifacts
+
+After the workflow completes, the build artifacts can be found in the "Actions" tab of the GitHub repository. Navigate to the specific workflow run to download the artifacts.
+
 ## Licensing and attribution
 
 Slic3r is licensed under the _GNU Affero General Public License, version 3_.
