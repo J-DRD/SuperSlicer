@@ -46,6 +46,11 @@ jobs:
         path: deps/destdir
     - run: dir deps
     - run: dir deps/destdir
+    - name: Ensure dependencies
+      working-directory: ./deps/destdir
+      run: |
+        if not exist deps_win.zip exit 1
+        "C:/Program Files/7-Zip/7z.exe" x deps_win.zip
     - run: mkdir msgfmt_bin
     - name: copy gettext
       working-directory: ./msgfmt_bin
