@@ -725,3 +725,6 @@ endif()
 
 include(CPack)
 
+if(CMAKE_ASM_MASM_COMPILER)
+    set(CMAKE_ASM_MASM_FLAGS "")
+endif()
