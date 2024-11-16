@@ -21,7 +21,7 @@ jobs:
         cmake-version: '3.16.x'
     - name: update submodule profiles
       working-directory: ./resources/profiles
-      run: git submodule update --init
+      run: git submodule update --init --recursive
     - name: change date in version
       run: sed -i "s/+UNKNOWN/_$(date '+%F')/" version.inc
     - name: update clock
