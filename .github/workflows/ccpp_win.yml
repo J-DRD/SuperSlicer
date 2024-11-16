@@ -9,6 +9,7 @@ on:
       - debug_win
       - rcx
       - master
+      - add-velocity-extrusion
 
 jobs:
   build_dep:
