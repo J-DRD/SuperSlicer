@@ -15,7 +15,7 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1
     - name: update submodule profiles
       working-directory: ./resources/profiles
-      run: git submodule update --init --recursive
+      run: git submodule update --init
     - run: mkdir deps/destdir
     - name: copy deps
       working-directory: ./deps/destdir
@@ -83,12 +83,10 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1
     - name: update submodule profiles
       working-directory: ./resources/profiles
-      run: git submodule update --init --recursive
+      run: git submodule update --init
     - name: change date in version
       shell: powershell
-      run: if (Test-Path version.inc) {
-              (Get-Content version.inc) -replace '\+UNKNOWN', "_$(Get-Date -Format yyyy-MM-dd)" | Set-Content version.inc
-            }
+      run: (Get-Content version.inc) | Foreach-Object {$_ -replace "\+UNKNOWN", ("_" + [datetime]::Today.ToString("yyyy-MM-dd"))} | Set-Content version.inc
     - name: mkdir in deps directory
       run: mkdir deps/destdir
     - name: download deps
