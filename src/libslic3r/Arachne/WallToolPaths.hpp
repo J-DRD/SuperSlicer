@@ -5,7 +5,8 @@
 #define CURAENGINE_WALLTOOLPATHS_H
 
 #include <memory>
-#include <unordered_set>
+
+#include <ankerl/unordered_dense.h>
 
 #include "BeadingStrategy/BeadingStrategyFactory.hpp"
 #include "utils/ExtrusionLine.hpp"
@@ -36,7 +37,7 @@ public:
         coord_t bead_width_0,
         coord_t bead_spacing_x,
         coord_t bead_width_x,
-        size_t inset_count, coord_t wall_0_inset, coordf_t layer_height, const PrintObjectConfig &print_object_config, const PrintConfig &print_config);
+        size_t inset_count, coord_t wall_0_inset, coordf_t layer_height, const PrintRegionConfig &print_region_config, const PrintConfig &print_config);
 
     /*!
      * Generates the Toolpaths
@@ -78,6 +79,7 @@ public:
      */
     static bool removeEmptyToolPaths(std::vector<VariableWidthLines> &toolpaths);
 
+    using ExtrusionLineSet = ankerl::unordered_dense::set<std::pair<const ExtrusionLine *, const ExtrusionLine *>, boost::hash<std::pair<const ExtrusionLine *, const ExtrusionLine *>>>;
     /*!
      * Get the order constraints of the insets when printing walls per region / hole.
      * Each returned pair consists of adjacent wall lines where the left has an inset_idx one lower than the right.
@@ -86,7 +88,7 @@ public:
      *
      * \param outer_to_inner Whether the wall polygons with a lower inset_idx should go before those with a higher one.
      */
-    static std::unordered_set<std::pair<const ExtrusionLine *, const ExtrusionLine *>, boost::hash<std::pair<const ExtrusionLine *, const ExtrusionLine *>>> getRegionOrder(const std::vector<ExtrusionLine *> &input, bool outer_to_inner);
+    static ExtrusionLineSet getRegionOrder(const std::vector<ExtrusionLine *> &input, bool outer_to_inner);
 
 protected:
     /*!
@@ -128,7 +130,7 @@ private:
     bool toolpaths_generated; //<! Are the toolpaths generated
     std::vector<VariableWidthLines> toolpaths; //<! The generated toolpaths
     Polygons inner_contour;  //<! The inner contour of the generated toolpaths
-    const PrintObjectConfig &print_object_config;
+    const PrintRegionConfig &print_region_config;
 };
 
 } // namespace Slic3r::Arachne

@@ -1,9 +1,12 @@
+///|/ Copyright (c) Prusa Research 2020 - 2022 Vojtěch Bubník @bubnikv, Oleksandra Iushchenko @YuSanka, Enrico Turri @enricoturri1966, Lukáš Matěna @lukasmatena
+///|/
+///|/ PrusaSlicer is released under the terms of the AGPLv3 or higher
+///|/
 #ifndef slic3r_GUI_DoubleSlider_hpp_
 #define slic3r_GUI_DoubleSlider_hpp_
 
 #include "libslic3r/CustomGCode.hpp"
 #include "wxExtensions.hpp"
-#include "DoubleSlider_Utils.hpp"
 
 #include <wx/window.h>
 #include <wx/control.h>
@@ -33,10 +36,10 @@ constexpr double epsilon() { return 0.0011; }
 bool equivalent_areas(const double& bottom_area, const double& top_area);
 
 // return true if color change was detected
-bool check_color_change(PrintObject* object, size_t frst_layer_id, size_t layers_cnt, bool check_overhangs,
+bool check_color_change(const PrintObject* object, size_t frst_layer_id, size_t layers_cnt, bool check_overhangs,
                         // what to do with detected color change
                         // and return true when detection have to be desturbed
-                        std::function<bool(Layer*)> break_condition);
+                        std::function<bool(const Layer*)> break_condition);
 
 // custom message the slider sends to its parent to notify a tick-change:
 wxDECLARE_EVENT(wxCUSTOMEVT_TICKSCHANGED, wxEvent);
@@ -120,7 +123,6 @@ class TickCodeInfo
 //    int         m_default_color_idx = 0;
 
     std::vector<std::string>* m_colors {nullptr};
-    ColorGenerator color_generator;
 
     std::string get_color_for_tick(TickCode tick, Type type, const int extruder);
 
@@ -250,6 +252,7 @@ public:
     void    SetTicksValues(const Info &custom_gcode_per_print_z);
     void    SetLayersTimes(const std::vector<float>& layers_times, float total_time);
     void    SetLayersTimes(const std::vector<double>& layers_times);
+    void    SetLayersAreas(const std::vector<float>& layers_areas);
 
     void    SetDrawMode(bool is_sla_print, bool is_sequential_print);
     void    SetDrawMode(DrawMode mode) { m_draw_mode = mode; }
@@ -312,7 +315,7 @@ public:
 protected:
 
     void    render();
-    void    draw_focus_rect();
+    void    draw_focus_rect(wxDC& dc);
     void    draw_action_icon(wxDC& dc, const wxPoint pt_beg, const wxPoint pt_end);
     void    draw_scroll_line(wxDC& dc, const int lower_pos, const int higher_pos);
     void    draw_thumb(wxDC& dc, const wxCoord& pos_coord, const SelectedSlider& selection);
@@ -438,6 +441,7 @@ private:
     std::vector<double> m_values;
     TickCodeInfo        m_ticks;
     std::vector<double> m_layers_times;
+    std::vector<double> m_layers_areas;
     std::vector<double> m_layers_values;
     std::vector<std::string>    m_extruder_colors;
     std::string         m_print_obj_idxs;
@@ -459,10 +463,24 @@ private:
     wxPen   GREY_PEN;
     wxPen   LIGHT_GREY_PEN;
 
+    wxPen   FOCUS_RECT_PEN;
+    wxBrush FOCUS_RECT_BRUSH;
+
     std::vector<wxPen*> m_line_pens;
     std::vector<wxPen*> m_segm_pens;
 
-    struct Ruler {
+    class Ruler {
+        wxWindow* m_parent{nullptr}; // m_parent is nullptr for Unused ruler
+                                     // in this case we will not init/update/render it  
+        // values to check if ruler has to be updated
+        double m_min_val;
+        double m_max_val;
+        double m_scroll_step;
+        size_t m_max_values_cnt;
+        int m_DPI;
+
+    public:
+
         //double long_step;
         //double short_step;
         int long_step; //in tick
@@ -470,10 +488,13 @@ private:
         // max value for each object/instance in sequence print, > 1 for sequential print (not used anymore)
         std::vector<std::pair<double,double>> sequences;
 
-        void init(const std::vector<double>& values);
-        void update(wxWindow* win, const std::vector<double>& values, double scroll_step);
+        void set_parent(wxWindow* parent);
+        void update_dpi();
+        void init(const std::vector<double>& values, double scroll_step);
+        void update(const std::vector<double>& values, double scroll_step);
         bool is_ok() { return long_step > 0 && short_step > 0; }
         size_t count() { return sequences.size(); }
+        bool can_draw() { return m_parent != nullptr; }
     } m_ruler;
 };
 

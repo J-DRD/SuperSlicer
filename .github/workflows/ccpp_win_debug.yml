@@ -16,12 +16,20 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1
     - name: update submodule profiles
       working-directory: ./resources/profiles
+<<<<<<< HEAD
+      run: git submodule update --init --recursive
+=======
       run: git submodule update --init
+>>>>>>> origin/master
     - run: mkdir deps/destdir
     - name: copy deps
       working-directory: ./deps/destdir
       shell: powershell
+<<<<<<< HEAD
+      run: '(new-object System.Net.WebClient).DownloadFile("https://github.com/supermerill/SuperSlicer_deps/releases/download/deps_27/deps_win.zip", "deps_win.zip")'
+=======
       run: '(new-object System.Net.WebClient).DownloadFile("https://github.com/supermerill/SuperSlicer_deps/releases/download/deps_25/deps_win.zip", "deps_win.zip")'
+>>>>>>> origin/master
     - name: unzip deps
       working-directory: ./deps/destdir
       shell: cmd
@@ -84,10 +92,12 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1
     - name: update submodule profiles
       working-directory: ./resources/profiles
-      run: git submodule update --init
+      run: git submodule update --init --recursive
     - name: change date in version
       shell: powershell
-      run: (Get-Content version.inc) | Foreach-Object {$_ -replace "\+UNKNOWN", ("_" + [datetime]::Today.ToString("yyyy-MM-dd"))} | Set-Content version.inc
+      run: if (Test-Path version.inc) {
+              (Get-Content version.inc) -replace '\+UNKNOWN', "_$(Get-Date -Format yyyy-MM-dd)" | Set-Content version.inc
+            }
     - name: mkdir in deps directory
       run: mkdir deps/destdir
     - name: download deps

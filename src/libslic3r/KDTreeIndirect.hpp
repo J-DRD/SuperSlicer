@@ -1,3 +1,7 @@
+///|/ Copyright (c) Prusa Research 2019 - 2022 Pavel Mikuš @Godrak, Tomáš Mészáros @tamasmeszaros, Vojtěch Bubník @bubnikv, Lukáš Matěna @lukasmatena
+///|/
+///|/ PrusaSlicer is released under the terms of the AGPLv3 or higher
+///|/
 // KD tree built upon external data set, referencing the external data by integer indices.
 
 #ifndef slic3r_KDTreeIndirect_hpp_
@@ -36,6 +40,7 @@ public:
     KDTreeIndirect(KDTreeIndirect &&rhs) : m_nodes(std::move(rhs.m_nodes)), coordinate(std::move(rhs.coordinate)) {}
     KDTreeIndirect& operator=(KDTreeIndirect &&rhs) { m_nodes = std::move(rhs.m_nodes); coordinate = std::move(rhs.coordinate); return *this; }
     void clear() { m_nodes.clear(); }
+    bool empty() { return m_nodes.empty(); }
 
     void build(size_t num_indices)
     {

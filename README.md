@@ -100,6 +100,22 @@ changes. This way we can ensure that nobody wastes their time and no conflicts a
 
 SuperSlicer is licensed under the _GNU Affero General Public License, version 3_.
 SuperSlicer is based on PrusaSlicer by PrusaResearch.
+Sure, but please read the
+[CONTRIBUTING](https://github.com/slic3r/Slic3r/blob/master/.github/CONTRIBUTING.md)
+document first!
+
+### Directory structure
+
+* `package/`: the scripts used for packaging the executables
+* `src/`: the C++ source of the `slic3r` executable and the CMake definition file for compiling it
+* `src/slic3r/GUI`: The C++ GUI.
+* `tests`: Test suite for Slic3r. Implemented with [Catch2](https://github.com/catchorg/Catch2)
+* `utils/`: various useful scripts
+* `src/libslic3r/`: C++ sources for libslic3r
+
+## Licensing and attribution
+
+Slic3r is licensed under the _GNU Affero General Public License, version 3_.
 
 PrusaSlicer is licensed under the _GNU Affero General Public License, version 3_.
 PrusaSlicer is owned by Prusa Research.

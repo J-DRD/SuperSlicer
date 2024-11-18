@@ -1,3 +1,9 @@
+///|/ Copyright (c) Prusa Research 2017 - 2021 Vojtěch Bubník @bubnikv, Lukáš Matěna @lukasmatena
+///|/ Copyright (c) Slic3r 2014 - 2015 Alessandro Ranellucci @alranel
+///|/ Copyright (c) 2015 Maksim Derbasov @ntfshard
+///|/
+///|/ PrusaSlicer is released under the terms of the AGPLv3 or higher
+///|/
 #include "Exception.hpp"
 #include "Print.hpp"
 
@@ -75,13 +81,20 @@ Flow PrintRegion::flow(const PrintObject &object, FlowRole role, double layer_he
     } else if (role == frTopSolidInfill) {
         config_width = m_config.top_infill_extrusion_width;
         config_spacing = m_config.top_infill_extrusion_spacing;
-        overlap = this->config().solid_infill_overlap.get_abs_value(1);
+        overlap = this->config().top_solid_infill_overlap.get_abs_value(1);
     } else {
         throw Slic3r::InvalidArgument("Unknown role");
     }
-    if (first_layer && object.config().first_layer_extrusion_width.value > 0) {
-        config_width = object.config().first_layer_extrusion_width;
-        config_spacing = object.config().first_layer_extrusion_spacing;
+    if (first_layer) {
+        if ((role == frInfill || role == frSolidInfill || role == frTopSolidInfill)
+                && object.config().first_layer_infill_extrusion_width.is_enabled()
+                ) {
+            config_width = object.config().first_layer_infill_extrusion_width;
+            config_spacing = object.config().first_layer_infill_extrusion_spacing;
+        } else if (object.config().first_layer_extrusion_width.is_enabled()) {
+            config_width = object.config().first_layer_extrusion_width;
+            config_spacing = object.config().first_layer_extrusion_spacing;
+        }
     }
 
     if (config_width.value == 0) {
@@ -106,8 +119,16 @@ float  PrintRegion::width(FlowRole role, bool first_layer, const PrintObject& ob
     const ConfigOptionFloatOrPercent* config_width = nullptr;
     // otherwise, get extrusion width from configuration
     // (might be an absolute value, or a percent value, or zero for auto)
-    if (first_layer && object.config().first_layer_extrusion_width.value > 0) {
-        config_width = &object.config().first_layer_extrusion_width;
+    if (first_layer) {
+        if ((role == frInfill || role == frSolidInfill || role == frTopSolidInfill)
+                && object.config().first_layer_infill_extrusion_width.is_enabled()
+                ) {
+            config_width = &object.config().first_layer_infill_extrusion_width;
+        } else if (object.config().first_layer_extrusion_width.is_enabled()) {
+            config_width = &object.config().first_layer_extrusion_width;
+        }
+    }
+    if(!config_width){
     } else if (role == frExternalPerimeter) {
         config_width = &m_config.external_perimeter_extrusion_width;
     } else if (role == frPerimeter) {
@@ -158,7 +179,7 @@ void PrintRegion::collect_object_printing_extruders(const PrintConfig &print_con
     	emplace_extruder(region_config.perimeter_extruder);
     if (region_config.fill_density.value > 0)
     	emplace_extruder(region_config.infill_extruder);
-    if (region_config.top_solid_layers.value > 0 || region_config.bottom_solid_layers.value > 0)
+    if (region_config.top_solid_layers.value > 0 || region_config.bottom_solid_layers.value > 0 || (region_config.solid_infill_every_layers.value > 0 && region_config.fill_density.value > 0))
     	emplace_extruder(region_config.solid_infill_extruder);
 }
 

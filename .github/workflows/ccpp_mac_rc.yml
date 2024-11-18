@@ -14,6 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: build deps & slicer
+<<<<<<< HEAD
+      run: ./BuildMacOS.sh -dsi
+=======
       run: ./BuildMacOS.sh
     - name: copy zstd
       run: cp /usr/local/opt/zstd/lib/libzstd.1.dylib ./build/pack/${{ github.event.repository.name }}/${{ github.event.repository.name }}.app/Contents/MacOS/libzstd.1.dylib
@@ -23,6 +26,7 @@ jobs:
       run: |
         hdiutil create -ov -fs HFS+ -volname ${{ github.event.repository.name }} -srcfolder "build/pack/${{ github.event.repository.name }}" temp.dmg
         hdiutil convert temp.dmg -format UDZO -o ${{ github.event.repository.name }}.dmg
+>>>>>>> origin/master
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:

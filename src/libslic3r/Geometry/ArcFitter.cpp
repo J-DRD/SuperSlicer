@@ -94,11 +94,12 @@ void ArcFitter::do_arc_fitting(const Points& points, std::vector<PathFittingData
     result.shrink_to_fit();
 }
 
-void ArcFitter::do_arc_fitting_and_simplify(Points& points, std::vector<PathFittingData>& result, double tolerance, double fit_circle_tolerance)
+void ArcFitter::do_arc_fitting_and_simplify(Points& points, std::vector<PathFittingData>& result, double tolerance, double fit_circle_tolerance, double fit_circle_percent_tolerance)
 {
     //BBS: 1 do arc fit first
     if (abs(tolerance) > SCALED_EPSILON)
-        ArcFitter::do_arc_fitting(points, result, fit_circle_tolerance, DEFAULT_ARC_LENGTH_PERCENT_TOLERANCE);
+        //ArcFitter::do_arc_fitting(points, result, fit_circle_tolerance, DEFAULT_ARC_LENGTH_PERCENT_TOLERANCE);
+        ArcFitter::do_arc_fitting(points, result, fit_circle_tolerance, fit_circle_percent_tolerance);
     else
         result.push_back(PathFittingData{ 0, points.size() - 1, EMovePathType::Linear_move, ArcSegment() });
 
@@ -106,7 +107,7 @@ void ArcFitter::do_arc_fitting_and_simplify(Points& points, std::vector<PathFitt
     //for arc part, only need to keep start and end point
     if (result.size() == 1 && result[0].path_type == EMovePathType::Linear_move) {
         //BBS: all are straight segment, directly use DP simplify
-        points = MultiPoint::_douglas_peucker(points, tolerance);
+        points = MultiPoint::douglas_peucker(points, tolerance);
         result[0].end_point_index = points.size() - 1;
         return;
     } else {
@@ -128,7 +129,7 @@ void ArcFitter::do_arc_fitting_and_simplify(Points& points, std::vector<PathFitt
             straight_or_arc_part.reserve(end_index - start_index + 1);
             for (size_t j = start_index; j <= end_index; j++)
                 straight_or_arc_part.push_back(points[j]);
-            straight_or_arc_part = MultiPoint::_douglas_peucker(straight_or_arc_part, tolerance);
+            straight_or_arc_part = MultiPoint::douglas_peucker(straight_or_arc_part, tolerance);
             //BBS: how many point has been reduced
             reduce_count[i] = end_index - start_index + 1 - straight_or_arc_part.size();
             //BBS: save the simplified result

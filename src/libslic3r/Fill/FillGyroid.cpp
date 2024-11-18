@@ -1,3 +1,8 @@
+///|/ Copyright (c) Prusa Research 2018 - 2021 Vojtěch Bubník @bubnikv, Lukáš Matěna @lukasmatena, Enrico Turri @enricoturri1966
+///|/ Copyright (c) SuperSlicer 2018 - 2019 Remi Durand @supermerill
+///|/
+///|/ PrusaSlicer is released under the terms of the AGPLv3 or higher
+///|/
 #include "../ClipperUtils.hpp"
 #include "../ShortestPath.hpp"
 #include "../Surface.hpp"
@@ -187,6 +192,7 @@ void FillGyroid::_fill_surface_single(
     }
 
     if (! polylines.empty()) {
+        ensure_valid(polylines, params.fill_resolution);
         // connect lines
         size_t polylines_out_first_idx = polylines_out.size();
         if (params.connection == icNotConnected){
