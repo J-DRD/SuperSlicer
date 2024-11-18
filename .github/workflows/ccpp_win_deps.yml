@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - debug_win
+      - master
 
 jobs:
   build_dep:
@@ -20,7 +21,7 @@ jobs:
         cmake .. -G "Visual Studio 16 2019" -A x64
         msbuild /m ALL_BUILD.vcxproj
     - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
+      uses: actions/upload-artifact@v3.0.0
       with:
         name: deps_win
         path: ./deps/build/destdir/
@@ -40,7 +41,7 @@ jobs:
       run: (Get-Content version.inc) | Foreach-Object {$_ -replace "\+UNKNOWN", ("_" + [datetime]::Today.ToString("yyyy-MM-dd"))} | Set-Content version.inc
     - run: mkdir deps/destdir
     - name: download deps
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v3
       with:
         name: deps_win
         path: deps/destdir
@@ -112,7 +113,7 @@ jobs:
 #      shell: cmd
 #      run: '"C:/Program Files/7-Zip/7z.exe" a -tzip nightly.zip *'
     - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
+      uses: actions/upload-artifact@v3.0.0
       with:
         name: nightly_win64
         path: build/package/
