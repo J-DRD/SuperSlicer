@@ -34,7 +34,6 @@ function usage() {
     exit 0
 }
 
-<<<<<<< HEAD
 function check_operating_system() {
 # check operating system
 
@@ -75,31 +74,6 @@ function check_operating_system() {
         echo -e "$(tput setaf 1)This script doesn't support your Operating system!"
         echo -e "Please use Linux 64-bit or Windows 10 64-bit with Linux subsystem / git-bash.$(tput sgr0)\n"
         exit -1
-=======
-if [[ -n "$FOUND_GTK3" ]]
-then
-    echo "Found GTK3"
-else
-    if [[ -n "$FOUND_GTK2" ]]
-    then
-        echo "Found GTK2"
-    fi
-fi
-
-if [[ -n "$UPDATE_LIB" ]]
-then
-    echo -n -e "Updating linux ...\n"
-    hwclock -s
-    apt update
-	apt install g++ m4
-    if [[ -z "$FOUND_GTK3" ]]
-    then
-        echo -e "\nInstalling: libgtk2.0-dev libglew-dev libudev-dev libdbus-1-dev cmake git gettext fuse\n"
-        apt install libgtk2.0-dev libglew-dev libudev-dev libdbus-1-dev cmake git gettext fuse
-    else
-        echo -e "\nFind libgtk-3, installing: libgtk-3-dev libglew-dev libudev-dev libdbus-1-dev cmake git gettext fuse\n"
-        apt install libgtk-3-dev libglew-dev libudev-dev libdbus-1-dev cmake git gettext fuse
->>>>>>> origin/master
     fi
 }
 
@@ -201,18 +175,7 @@ fi
 
 source ./src/platform/unix/linux.d/${DISTRIBUTION}
 
-<<<<<<< HEAD
 if [[ -n "$FORCE_GTK2" ]]
-=======
-# mkdir build
-if [ ! -d "build" ]
-then
-    mkdir build
-fi
-
-# mkdir in deps
-if [ ! -d "deps/build" ]
->>>>>>> origin/master
 then
     FOUND_GTK2=$(dpkg -l libgtk* | grep gtk2)
     FOUND_GTK2_DEV=$(dpkg -l libgtk* | grep gtk2.0-dev)
@@ -313,7 +276,6 @@ then
     then
         BUILD_ARGS="${BUILD_ARGS} -DCMAKE_BUILD_TYPE=Debug"
     fi
-<<<<<<< HEAD
 
    if [[ -n "$BUILD_TESTS" ]]
    then
@@ -349,29 +311,6 @@ then
     pushd build  > /dev/null
     $ROOT/build/src/BuildLinuxImage.sh -a $FORCE_GTK2
     popd  > /dev/null
-=======
-    
-    # cmake
-    pushd build
-        cmake .. -DCMAKE_PREFIX_PATH="$PWD/../deps/build/destdir/usr/local" -DSLIC3R_STATIC=1 ${BUILD_ARGS}
-        echo "done"
-        
-        #make avrdude-slic3r
-        make avrdude-slic3r
-        
-        # make Slic3r
-        echo "[8/9] Building Slic3r..."
-        make -j$NCORES Slic3r
-
-        # make .mo
-        make gettext_po_to_mo
-        
-        # make OCCTWrapper.so
-        make OCCTWrapper
-    
-    popd
-    echo "done"
->>>>>>> origin/master
 fi
 
 if [[ -n "$BUILD_IMAGE" ]]

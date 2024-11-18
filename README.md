@@ -1,4 +1,3 @@
-
 [![you can get this shield at shields.io](https://img.shields.io/discord/771316156203270154?color=7289da&logo=discord&logoColor=white)](https://github.com/supermerill/SuperSlicer/issues/611#issuecomment-907833287) [![you can get this shield at shields.io](https://img.shields.io/reddit/subreddit-subscribers/slic3r)](https://reddit.com/r/slic3r) [![you can get this shield at shields.io](https://img.shields.io/github/discussions/supermerill/superslicer)](https://github.com/supermerill/SuperSlicer/discussions)
 
 [![Packaging status](https://repology.org/badge/tiny-repos/superslicer.svg)](https://repology.org/project/superslicer/versions) [![you can get this shield at shields.io](https://img.shields.io/chocolatey/v/superslicer)](https://community.chocolatey.org/packages/superslicer) [![you can get this shield at shields.io](https://img.shields.io/homebrew/cask/v/superslicer)](https://formulae.brew.sh/cask/superslicer) [![you can get this shield at shields.io](https://img.shields.io/archlinux/v/community/x86_64/superslicer)](https://archlinux.org/packages/extra/x86_64/superslicer/)
@@ -125,3 +124,11 @@ Slic3r is licensed under the _GNU Affero General Public License, version 3_.
 Slic3r was created by Alessandro Ranellucci with the help of many other contributors.
 
 The _GNU Affero General Public License, version 3_ ensures that if you **use** any part of this software in any way (even behind a web server), your software must be released under the same license.
+
+## Equivalent File for Linux
+
+Yes, there is an equivalent for Linux. 🐧
+The equivalent file is `.github/workflows/ccpp_ubuntu.yml` located in `.github/workflows/`. 🐧
+Other related files include `.github/workflows/ccpp_ubuntu_debug.yml`, `.github/workflows/ccpp_ubuntu_gtk3_debug.yml`, and `.github/workflows/ccpp_ubuntu_gtk3.yml`. 🐧
+These files handle the dependencies and build processes for Linux systems. 🐧
+The `BuildLinux.sh` script is used for building on Linux. 🐧
