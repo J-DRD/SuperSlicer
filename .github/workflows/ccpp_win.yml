@@ -20,12 +20,20 @@ jobs:
       run: git submodule update --init
     - name: change date in version
       shell: powershell
+<<<<<<< HEAD
       run: (Get-Content version.inc) | Foreach-Object {$_ -replace "\+UNKNOWN", ("-" + [datetime]::Today.ToString("yyyy-MM-dd"))} | Set-Content version.inc
+=======
+      run: (Get-Content version.inc) | Foreach-Object {$_ -replace "\+UNKNOWN", ("_" + [datetime]::Today.ToString("yyyy-MM-dd"))} | Set-Content version.inc
+>>>>>>> origin/master
     - run: mkdir deps/destdir
     - name: copy deps
       working-directory: ./deps/destdir
       shell: powershell
+<<<<<<< HEAD
       run: '(new-object System.Net.WebClient).DownloadFile("https://github.com/supermerill/SuperSlicer_deps/releases/download/deps_27/deps_win.zip", "deps_win.zip")'
+=======
+      run: '(new-object System.Net.WebClient).DownloadFile("https://github.com/supermerill/SuperSlicer_deps/releases/download/deps_25/deps_win.zip", "deps_win.zip")'
+>>>>>>> origin/master
     - name: unzip deps
       working-directory: ./deps/destdir
       shell: cmd

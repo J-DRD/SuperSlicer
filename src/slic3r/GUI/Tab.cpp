@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ///|/ Copyright (c) Prusa Research 2017 - 2023 Oleksandra Iushchenko @YuSanka, Lukáš Matěna @lukasmatena, Lukáš Hejl @hejllukas, Vojtěch Bubník @bubnikv, Pavel Mikuš @Godrak, Tomáš Mészáros @tamasmeszaros, David Kocík @kocikdav, Enrico Turri @enricoturri1966, Vojtěch Král @vojtechkral
 ///|/ Copyright (c) 2021 Martin Budden
 ///|/ Copyright (c) 2021 Ilya @xorza
@@ -20,6 +21,8 @@
 // #include "libslic3r/GCodeSender.hpp"
 #include "slic3r/GUI/BedShapeDialog.hpp"
 #include "slic3r/Utils/Serial.hpp"
+=======
+>>>>>>> origin/master
 #include "Tab.hpp"
 
 #include "libslic3r/Log.hpp"
@@ -28,6 +31,7 @@
 #include "libslic3r/Utils.hpp"
 #include "libslic3r/GCode/GCodeProcessor.hpp"
 #include <libslic3r/Slicing.hpp>
+<<<<<<< HEAD
 #include "libslic3r/GCode/GCodeWriter.hpp"
 #include "libslic3r/GCode/Thumbnails.hpp"
 
@@ -40,6 +44,17 @@
 #include "GUI_App.hpp"
 #include "GUI_ObjectList.hpp"
 #include "MainFrame.hpp"
+=======
+
+#include "BonjourDialog.hpp"
+#include "ButtonsDescription.hpp"
+#include "GUI_App.hpp"
+#include "GUI_ObjectList.hpp"
+#include "MainFrame.hpp"
+#include "GLCanvas3D.hpp"
+#include "slic3r/Utils/Http.hpp"
+#include "format.hpp"
+>>>>>>> origin/master
 #include "MsgDialog.hpp"
 #include "Notebook.hpp"
 #include "OG_CustomCtrl.hpp"
@@ -47,13 +62,19 @@
 #include "Plater.hpp"
 #include "PresetComboBoxes.hpp"
 #include "PresetHints.hpp"
+<<<<<<< HEAD
 #include "slic3r/Utils/Http.hpp"
+=======
+>>>>>>> origin/master
 #include "slic3r/Utils/PrintHost.hpp"
 #include "slic3r/Utils/Serial.hpp"
 #include "SavePresetDialog.hpp"
 #include "Search.hpp"
 #include "UnsavedChangesDialog.hpp"
+<<<<<<< HEAD
 #include "Widgets/CheckBox.hpp"
+=======
+>>>>>>> origin/master
 #include "WipeTowerDialog.hpp"
 
 
@@ -67,7 +88,10 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/log/trivial.hpp>
+<<<<<<< HEAD
 #include <boost/nowide/fstream.hpp>
+=======
+>>>>>>> origin/master
 
 #include <wx/app.h>
 #include <wx/bmpcbox.h>
@@ -84,7 +108,10 @@
 #include "wxExtensions.hpp"
 #include <wx/wupdlock.h>
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 #ifdef WIN32
     #include <CommCtrl.h>
 #endif // WIN32
@@ -484,6 +511,10 @@ int Tab::get_icon_id(const wxString& title, const std::string& icon)
         if (icon_idx == -1) {
             // Add a new icon to the icon list.
             m_scaled_icons_list.push_back(ScalableBitmap(this, icon));
+<<<<<<< HEAD
+=======
+            m_icons->Add(m_scaled_icons_list.back().bmp());
+>>>>>>> origin/master
             icon_idx           = ++m_icon_count;
             m_icon_index[icon] = icon_idx;
         }
@@ -493,7 +524,10 @@ int Tab::get_icon_id(const wxString& title, const std::string& icon)
             m_category_icon[title] = icon;
         }
     }
+<<<<<<< HEAD
     assert(icon_idx >= 0 && (icon_idx == 0 || icon_idx < m_scaled_icons_list.size()));
+=======
+>>>>>>> origin/master
     return icon_idx;
 }
 
@@ -1608,12 +1642,18 @@ void Tab::activate_option(const std::string& opt_key, const wxString& category)
 void TabFrequent::activate_option(const std::string &opt_key, const wxString &category){
     wxGetApp().plater()->collapse_sidebar(false);
     wxGetApp().mainframe->select_tab(MainFrame::ETabType::Plater3D);
+<<<<<<< HEAD
     // no act btns -> no blink arrow
     //std::pair<OG_CustomCtrl*, bool*> ctrl = get_custom_ctrl_with_blinking_ptr(opt_key);
     //m_highlighter.init(ctrl);
 }
 
 void Tab::cache_config_diff(const std::vector<std::string>& selected_options, const DynamicPrintConfig* config/* = nullptr*/)
+=======
+}
+
+void Tab::cache_config_diff(const std::vector<std::string>& selected_options)
+>>>>>>> origin/master
 {
     m_cache_config.apply_only(config ? *config : m_presets->get_edited_preset().config, selected_options);
 }
@@ -3429,7 +3469,11 @@ void TabFilament::update()
 
     m_update_cnt--;
 
+<<<<<<< HEAD
     if (m_update_cnt == 0 && wxGetApp().mainframe) {
+=======
+    if (m_update_cnt == 0) {
+>>>>>>> origin/master
         assert(m_config);
         wxGetApp().mainframe->on_config_changed(*m_config);
     }
@@ -5523,9 +5567,14 @@ wxSizer* TabPrint::create_substitutions_widget(wxWindow* parent)
     m_subst_manager.init(m_config, parent, grid_sizer);
     m_subst_manager.set_cb_edited_substitution([this]() {
         update_dirty();
+<<<<<<< HEAD
         Layout();
         wxGetApp().mainframe->on_config_changed(*m_config); // invalidate print
     });
+=======
+        wxGetApp().mainframe->on_config_changed(*m_config); // invalidate print
+        });
+>>>>>>> origin/master
     m_subst_manager.set_cb_hide_delete_all_btn([this]() {
         m_del_all_substitutions_btn->Hide();
     });
@@ -6228,6 +6277,7 @@ void TabSLAMaterial::update()
 //     if (m_update_cnt == 0)
         assert(m_config);
         wxGetApp().mainframe->on_config_changed(*m_config);
+<<<<<<< HEAD
 }
 
 //static void add_options_into_line(ConfigOptionsGroupShp &optgroup,
@@ -6391,6 +6441,8 @@ void TabSLAMaterial::update_material_overrides_page()
     //    if (field != nullptr)
     //        field->toggle_widget_enable(is_checked);
     //}
+=======
+>>>>>>> origin/master
 }
 
 void TabSLAPrint::init()

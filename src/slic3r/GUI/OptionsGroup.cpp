@@ -150,6 +150,7 @@ OptionsGroup::OptionsGroup(	wxWindow* _parent, const wxString& title,
                 staticbox(title!=""), extra_column(extra_clmn)
 {
     assert(Tab::fake_build || m_parent);
+<<<<<<< HEAD
 }
 
 Option::Option(const ConfigOptionDef& _opt, t_config_option_key id) : opt(_opt), opt_id(id)
@@ -182,6 +183,8 @@ void Line::clear()
         delete extra_widget_sizer;
         extra_widget_sizer = nullptr;
     }
+=======
+>>>>>>> origin/master
 }
 
 wxWindow* OptionsGroup::ctrl_parent() const

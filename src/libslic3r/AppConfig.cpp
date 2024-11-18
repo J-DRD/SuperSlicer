@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ///|/ Copyright (c) Prusa Research 2017 - 2023 Oleksandra Iushchenko @YuSanka, Vojtěch Bubník @bubnikv, Pavel Mikuš @Godrak, David Kocík @kocikdav, Lukáš Matěna @lukasmatena, Enrico Turri @enricoturri1966, Lukáš Hejl @hejllukas, Filip Sykala @Jony01, Vojtěch Král @vojtechkral
 ///|/ Copyright (c) SuperSlicer 2023 Remi Durand @supermerill
 ///|/ 
@@ -5,6 +6,8 @@
 ///|/
 #include "libslic3r/libslic3r.h"
 #include "libslic3r/Utils.hpp"
+=======
+>>>>>>> origin/master
 #include "AppConfig.hpp"
 
 #include "libslic3r.h"
@@ -14,7 +17,10 @@
 #include "LocalesUtils.hpp"
 #include "Thread.hpp"
 #include "Utils.hpp"
+<<<<<<< HEAD
 #include "Color.hpp"
+=======
+>>>>>>> origin/master
 
 #include <utility>
 #include <vector>

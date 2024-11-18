@@ -560,6 +560,7 @@ void PrintObject::prepare_infill()
     this->set_done(posPrepareInfill);
 }
 
+<<<<<<< HEAD
 void PrintObject::_compute_max_sparse_spacing()
 {
     m_max_sparse_spacing = 0;
@@ -577,6 +578,29 @@ void PrintObject::_compute_max_sparse_spacing()
                     int64_t prev_value = max_sparse_spacing.load();
                     while (prev_value < int64_t(spacing) &&
                            !max_sparse_spacing.compare_exchange_weak(prev_value, int64_t(spacing))) {
+=======
+    void PrintObject::_compute_max_sparse_spacing()
+    {
+        m_max_sparse_spacing = 0;
+        std::atomic_int64_t max_sparse_spacing(0);
+        tbb::parallel_for(
+            tbb::blocked_range<size_t>(0, m_layers.size()),
+            [this, &max_sparse_spacing](const tbb::blocked_range<size_t>& range) {
+        for (size_t layer_idx = range.begin(); layer_idx < range.end(); ++layer_idx) {
+        //for (size_t layer_idx = 0; layer_idx < m_layers.size(); ++layer_idx) {
+            m_print->throw_if_canceled();
+            const Layer *layer = m_layers[layer_idx];
+            for (const LayerRegion *layerm : layer->regions()) {
+                // check if region has sparse infill.
+                for (const Surface &surface : layerm->fill_surfaces.surfaces) {
+                    if (surface.has_fill_sparse()) {
+                        coord_t spacing = layerm->region().flow(*this, frInfill, layer->height, layer->id()).scaled_spacing();
+                        // update atomic to max
+                        int64_t prev_value = max_sparse_spacing.load();
+                        while (prev_value < int64_t(spacing) &&
+                               !max_sparse_spacing.compare_exchange_weak(prev_value, int64_t(spacing))) {
+                        }
+>>>>>>> origin/master
                     }
                 }
             }

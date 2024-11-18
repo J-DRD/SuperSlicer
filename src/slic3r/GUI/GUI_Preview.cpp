@@ -447,6 +447,79 @@ void Preview::on_size(wxSizeEvent& evt)
     Refresh();
 }
 
+<<<<<<< HEAD
+=======
+void Preview::on_choice_view_type(wxCommandEvent& evt)
+{
+    int selection = m_choice_view_type->GetCurrentSelection();
+    if (0 <= selection && selection < static_cast<int>(GCodeViewer::EViewType::Count)) {
+        this->m_last_choice = static_cast<GCodeViewer::EViewType>(selection);
+        m_canvas->set_toolpath_view_type(this->m_last_choice);
+        m_keep_current_preview_type = true;
+    }
+    refresh_print();
+}
+
+void Preview::on_combochecklist_features(wxCommandEvent& evt)
+{
+    unsigned int flags = Slic3r::GUI::combochecklist_get_flags(m_combochecklist_features);
+    m_canvas->set_toolpath_role_visibility_flags(flags);
+    refresh_print();
+}
+
+void Preview::on_combochecklist_options(wxCommandEvent& evt)
+{
+    const unsigned int curr_flags = m_canvas->get_gcode_options_visibility_flags();
+    const unsigned int new_flags = Slic3r::GUI::combochecklist_get_flags(m_combochecklist_options);
+    if (curr_flags == new_flags)
+        return;
+
+    m_canvas->set_gcode_options_visibility_from_flags(new_flags);
+    if (m_canvas->get_gcode_view_type() == GCodeViewer::EViewType::Feedrate) {
+        const unsigned int diff_flags = curr_flags ^ new_flags;
+        if ((diff_flags & (1 << static_cast<unsigned int>(Preview::OptionType::Travel))) != 0) {
+            m_force_gcode_color_recompute = true;
+            refresh_print();
+        } else {
+            m_canvas->refresh_gcode_preview_render_paths();
+        }
+    }
+    else
+        m_canvas->refresh_gcode_preview_render_paths();
+
+    update_moves_slider();
+}
+
+void Preview::update_bottom_toolbar()
+{
+    combochecklist_set_flags(m_combochecklist_features, m_canvas->get_toolpath_role_visibility_flags());
+    combochecklist_set_flags(m_combochecklist_options, m_canvas->get_gcode_options_visibility_flags());
+
+    // updates visibility of features combobox
+    if (m_bottom_toolbar_panel->IsShown()) {
+        wxSizer* sizer = m_bottom_toolbar_panel->GetSizer();
+        bool show = !m_canvas->is_gcode_legend_enabled() || m_canvas->get_gcode_view_type() != GCodeViewer::EViewType::FeatureType;
+
+        if (show) {
+            if (sizer->GetItem(m_combochecklist_features) == nullptr) {
+                sizer->Insert(m_combochecklist_features_pos, m_combochecklist_features, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
+                sizer->Show(m_combochecklist_features);
+                sizer->Layout();
+                Refresh();
+            }
+        }
+        else {
+            if (sizer->GetItem(m_combochecklist_features) != nullptr) {
+                sizer->Hide(m_combochecklist_features);
+                sizer->Detach(m_combochecklist_features);
+                sizer->Layout();
+                Refresh();
+            }
+        }
+    }
+}
+
+>>>>>>> origin/master
 wxBoxSizer* Preview::create_layers_slider_sizer()
 {
     wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -479,7 +552,12 @@ wxBoxSizer* Preview::create_layers_slider_sizer()
                                                                                                               "Remove";
 
         m_schedule_background_process();
+<<<<<<< HEAD
         wxGetApp().plater()->take_snapshot(GUI::format_wxstr(_L("Change layer gcode: %s element"), operation_message));
+=======
+        wxGetApp().plater()->take_snapshot(from_u8(
+            (boost::format(_utf8(L("Change layer gcode: %s element"))) % operation_message).str()));
+>>>>>>> origin/master
         m_keep_current_preview_type = false;
         reload_print(false);
         });
@@ -587,7 +665,11 @@ void Preview::update_layers_slider(const std::vector<double>& layers_z, bool sho
     }
     m_layers_slider->SetSelectionSpan(idx_low, idx_high);
     m_layers_slider->SetTicksValues(ticks_info_from_model);
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> origin/master
     bool sequential_print = wxGetApp().preset_bundle->fff_prints.get_edited_preset().config.opt_bool("complete_objects");
     bool sla_print_technology = plater->printer_technology() == ptSLA;
     m_layers_slider->SetDrawMode(sla_print_technology, sequential_print);
@@ -599,6 +681,7 @@ void Preview::update_layers_slider(const std::vector<double>& layers_z, bool sho
                 // do not fetch uncomplete data
                 m_layers_slider->SetLayersTimes({}, 0);
             } else {
+<<<<<<< HEAD
                 auto print_mode_stat = m_gcode_result.print_statistics.modes.front();
                 m_layers_slider->SetLayersTimes(print_mode_stat.layers_times, print_mode_stat.time);
             }
@@ -621,6 +704,15 @@ void Preview::update_layers_slider(const std::vector<double>& layers_z, bool sho
     } else {
         m_layers_slider->SetLayersTimes({}, 0);
         m_layers_slider->SetLayersAreas({});
+=======
+                auto print_mode_stat = m_gcode_result->print_statistics.modes.front();
+                m_layers_slider->SetLayersTimes(print_mode_stat.layers_times, print_mode_stat.time);
+            }
+        }
+
+    } else {
+        m_layers_slider->SetLayersTimes({}, 0);
+>>>>>>> origin/master
     }
 
     // check if ticks_info_from_model contains ColorChange g-code
@@ -793,6 +885,7 @@ void Preview::update_moves_slider()
     if (view.endpoints.last < view.endpoints.first)
         return;
 
+<<<<<<< HEAD
     assert(view.endpoints.first <= view.current.first && view.current.first <= view.endpoints.last);
     assert(view.endpoints.first <= view.current.last && view.current.last <= view.endpoints.last);
 
@@ -817,15 +910,32 @@ void Preview::update_moves_slider()
             values.emplace_back(static_cast<double>(i + 1));
             alternate_values.emplace_back(static_cast<double>(view.gcode_ids[i]));
         }
+=======
+    std::vector<double> values(view.endpoints.last - view.endpoints.first + 1);
+    std::vector<double> alternate_values(view.endpoints.last - view.endpoints.first + 1);
+    unsigned int count = 0;
+    for (unsigned int i = view.endpoints.first; i <= view.endpoints.last; ++i) {
+        values[count] = static_cast<double>(i + 1);
+        if (view.gcode_ids.size() > i && view.gcode_ids[i] > 0)
+            alternate_values[count] = static_cast<double>(view.gcode_ids[i]);
+        ++count;
+>>>>>>> origin/master
     }
     // should the end of the horizontal slider stay at the end?
     bool max_is_max = m_moves_slider->GetMaxValue() == m_moves_slider->GetHigherValue();
     // update values
     m_moves_slider->SetSliderValues(values);
     m_moves_slider->SetSliderAlternateValues(alternate_values);
+<<<<<<< HEAD
     m_moves_slider->SetMaxValue(int(values.size()) - 1);
     m_moves_slider->SetSelectionSpan(values.front() - 1 - view.endpoints.first,
                                      max_is_max ? m_moves_slider->GetMaxValue() : values.back() - 1 - view.endpoints.first);
+=======
+    m_moves_slider->SetMaxValue(view.endpoints.last - view.endpoints.first);
+    m_moves_slider->SetSelectionSpan(view.current.first - view.endpoints.first,
+                                     max_is_max ? m_moves_slider->GetMaxValue() :
+                                                  (view.current.last - view.endpoints.first));
+>>>>>>> origin/master
     m_moves_slider->fire_update_if_needed();
 }
 
@@ -935,7 +1045,13 @@ void Preview::load_print_as_fff(bool keep_z_range)
             // Load the real G-code preview.
             if (current_force_state == ForceState::NoForce)
                 m_canvas->set_items_show(false, true);
+<<<<<<< HEAD
             m_canvas->load_gcode_preview(m_gcode_result, colors);
+=======
+            m_canvas->load_gcode_preview(*m_gcode_result, colors, m_force_gcode_color_recompute);
+            m_force_gcode_color_recompute = false;
+            m_left_sizer->Show(m_bottom_toolbar_panel);
+>>>>>>> origin/master
             m_left_sizer->Layout();
             Refresh();
             zs = m_canvas->get_gcode_layers_zs();
@@ -954,11 +1070,14 @@ void Preview::load_print_as_fff(bool keep_z_range)
             Refresh();
             zs = m_canvas->get_volumes_print_zs(true);
             gcode_not_extrusions = false;
+<<<<<<< HEAD
         }
         else {
             m_left_sizer->Hide(m_bottom_toolbar_panel);
             m_left_sizer->Layout();
             Refresh();
+=======
+>>>>>>> origin/master
         }
 
         if (!zs.empty() && !m_keep_current_preview_type) {
@@ -968,6 +1087,7 @@ void Preview::load_print_as_fff(bool keep_z_range)
             std::vector<Item> gcodes = wxGetApp().is_editor() ?
                 wxGetApp().plater()->model().custom_gcode_per_print_z.gcodes :
                 m_canvas->get_custom_gcode_per_print_z();
+<<<<<<< HEAD
             const bool contains_color_gcodes = std::any_of(std::begin(gcodes), std::end(gcodes),
                 [](auto const& item) { return item.type == CustomGCode::Type::ColorChange || item.type == CustomGCode::Type::ToolChange; });
             const GCodeViewer::EViewType choice = contains_color_gcodes ?
@@ -978,6 +1098,20 @@ void Preview::load_print_as_fff(bool keep_z_range)
                 if (wxGetApp().is_gcode_viewer())
                     m_keep_current_preview_type = true;
                 // refresh_print();
+=======
+            const wxString choice = !gcodes.empty() ?
+                _L("Color Print") :
+                (number_extruders > 1) ? _L("Tool") : _L("Feature type");
+
+            int type = m_choice_view_type->FindString(choice);
+            if (m_choice_view_type->GetSelection() != type) {
+                if (0 <= type && type < static_cast<int>(GCodeViewer::EViewType::Count)) {
+                    m_choice_view_type->SetSelection(type);
+                    m_canvas->set_gcode_view_preview_type(static_cast<GCodeViewer::EViewType>(type));
+                    if (wxGetApp().is_gcode_viewer())
+                        m_keep_current_preview_type = true;
+                }
+>>>>>>> origin/master
             }
         }
 

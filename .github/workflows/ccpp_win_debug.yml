@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - debug_win
+      - rcx
 
 jobs:
 
@@ -15,12 +16,20 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1
     - name: update submodule profiles
       working-directory: ./resources/profiles
+<<<<<<< HEAD
       run: git submodule update --init --recursive
+=======
+      run: git submodule update --init
+>>>>>>> origin/master
     - run: mkdir deps/destdir
     - name: copy deps
       working-directory: ./deps/destdir
       shell: powershell
+<<<<<<< HEAD
       run: '(new-object System.Net.WebClient).DownloadFile("https://github.com/supermerill/SuperSlicer_deps/releases/download/deps_27/deps_win.zip", "deps_win.zip")'
+=======
+      run: '(new-object System.Net.WebClient).DownloadFile("https://github.com/supermerill/SuperSlicer_deps/releases/download/deps_25/deps_win.zip", "deps_win.zip")'
+>>>>>>> origin/master
     - name: unzip deps
       working-directory: ./deps/destdir
       shell: cmd

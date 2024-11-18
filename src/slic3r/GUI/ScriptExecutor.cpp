@@ -6,6 +6,7 @@
 #include "GUI_App.hpp"
 #include "Plater.hpp"
 #include "Tab.hpp"
+<<<<<<< HEAD
 
 #include <boost/log/trivial.hpp>
 #include <boost/lexical_cast.hpp>
@@ -13,6 +14,8 @@
 #include <boost/algorithm/string/erase.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/filesystem.hpp>
+=======
+>>>>>>> origin/master
 
 #include <string>
 

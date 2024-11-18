@@ -1146,8 +1146,28 @@ public:
         if (rhs.type() != this->type())
             throw ConfigurationError("ConfigOptionFloats: Comparing incompatible types");
         assert(dynamic_cast<const ConfigOptionVector<double>*>(&rhs));
+<<<<<<< HEAD
         return this->has_same_enabled(*static_cast<const ConfigOptionVector<double> *>(&rhs)) &&
                this->m_values == static_cast<const ConfigOptionVector<double> *>(&rhs)->get_values();
+=======
+        return vectors_equal(this->values, static_cast<const ConfigOptionVector<double>*>(&rhs)->values);
+    }
+    // Could a special "nil" value be stored inside the vector, indicating undefined value?
+    bool 					nullable() const override { return NULLABLE; }
+    // A scalar is nil, or all values of a vector are nil.
+    bool is_nil(int32_t idx = -1) const override
+    {
+        if (idx < 0) {
+            for (double v : this->values)
+                if (!std::isnan(v) && v != NIL_VALUE())
+                    return false;
+            return true;
+        } else {
+            return idx < int32_t(values.size()) ? (std::isnan(this->values[idx]) || NIL_VALUE() == this->values[idx]) :
+                   values.empty()               ? (std::isnan(this->default_value) || NIL_VALUE() == this->default_value) :
+                                                  (std::isnan(this->values.front()) || NIL_VALUE() == this->values.front());
+        }
+>>>>>>> origin/master
     }
     double                  get_float(size_t idx = 0) const override { return get_at(idx); }
 
@@ -1290,10 +1310,35 @@ public:
 
     static ConfigOptionType static_type() { return coInts; }
     ConfigOptionType        type()  const override { return static_type(); }
+<<<<<<< HEAD
     ConfigOption*           clone() const override { assert(this->m_values.size() == this->m_enabled.size()); return new ConfigOptionInts(*this); }
     ConfigOptionInts&  operator= (const ConfigOption *opt) { this->set(opt); return *this; }
     bool                    operator==(const ConfigOptionInts &rhs) const throw() { return this->m_enabled == rhs.m_enabled && this->m_values == rhs.m_values; }
     bool                    operator< (const ConfigOptionInts &rhs) const throw() { return this->m_enabled < rhs.m_enabled || (this->m_enabled == rhs.m_enabled && this->m_values < rhs.m_values); }
+=======
+    ConfigOption*           clone() const override { return new ConfigOptionIntsTempl(*this); }
+    ConfigOptionIntsTempl&  operator= (const ConfigOption *opt) { this->set(opt); return *this; }
+    bool                    operator==(const ConfigOptionIntsTempl &rhs) const throw() { return this->values == rhs.values; }
+    bool                    operator< (const ConfigOptionIntsTempl &rhs) const throw() { return this->values <  rhs.values; }
+    // Could a special "nil" value be stored inside the vector, indicating undefined value?
+    bool                    nullable() const override { return NULLABLE; }
+    // Special "nil" value to be stored into the vector if this->supports_nil().
+    static int32_t          NIL_VALUE() { return std::numeric_limits<int32_t>::max(); }
+    // A scalar is nil, or all values of a vector are nil.
+    bool is_nil(int32_t idx = -1) const override
+    {
+        if (idx < 0) {
+            for (int32_t v : this->values)
+                if (v != NIL_VALUE())
+                    return false;
+            return true;
+        } else {
+            return idx < int32_t(values.size()) ? NIL_VALUE() == this->values[idx] :
+                   values.empty()               ? NIL_VALUE() == this->default_value :
+                                                  NIL_VALUE() == this->values.front();
+        }
+    }
+>>>>>>> origin/master
     int32_t                 get_int(size_t idx = 0) const override { return get_at(idx); }
     double                  get_float(size_t idx = 0) const override { return get_at(idx); }
 
@@ -1660,11 +1705,24 @@ public:
         { return this->m_enabled == rhs.m_enabled && this->m_values == rhs.m_values; }
     bool                    operator==(const ConfigOption &rhs) const override
     {
+<<<<<<< HEAD
         if (rhs.type() != this->type())
             throw ConfigurationError("ConfigOptionFloatsOrPercents: Comparing incompatible types");
         assert(dynamic_cast<const ConfigOptionVector<FloatOrPercent> *>(&rhs));
         return this->has_same_enabled(*static_cast<const ConfigOptionVector<FloatOrPercent> *>(&rhs)) &&
                this->m_values == static_cast<const ConfigOptionVector<FloatOrPercent> *>(&rhs)->get_values();
+=======
+        if (idx < 0) {
+            for (const FloatOrPercent &v : this->values)
+                if (!(std::isnan(v.value) || v.value == NIL_VALUE().value || v.value > std::numeric_limits<float>::max()))
+                    return false;
+            return true;
+        } else {
+            return idx < int32_t(values.size()) ? (std::isnan(this->values[idx].value) || NIL_VALUE() == this->values[idx]) :
+                   values.empty()               ? (std::isnan(this->default_value.value) || NIL_VALUE() == this->default_value) :
+                                                  (std::isnan(this->values.front().value) || NIL_VALUE() == this->values.front());
+        }
+>>>>>>> origin/master
     }
     bool                    operator<(const ConfigOptionFloatsOrPercents &rhs) const throw()
         { return this->m_enabled < rhs.m_enabled || (this->m_enabled == rhs.m_enabled && this->m_values < rhs.m_values); }
@@ -2183,10 +2241,35 @@ public:
 
     static ConfigOptionType static_type() { return coBools; }
     ConfigOptionType        type()  const override { return static_type(); }
+<<<<<<< HEAD
     ConfigOption*           clone() const override { assert(this->m_values.size() == this->m_enabled.size()); return new ConfigOptionBools(*this); }
     ConfigOptionBools& operator=(const ConfigOption *opt) { this->set(opt); return *this; }
     bool                    operator==(const ConfigOptionBools &rhs) const throw() { return this->m_enabled == rhs.m_enabled && this->m_values == rhs.m_values; }
     bool                    operator< (const ConfigOptionBools &rhs) const throw() { return this->m_enabled < rhs.m_enabled || (this->m_enabled == rhs.m_enabled && this->m_values <  rhs.m_values); }
+=======
+    ConfigOption*           clone() const override { return new ConfigOptionBoolsTempl(*this); }
+    ConfigOptionBoolsTempl& operator=(const ConfigOption *opt) { this->set(opt); return *this; }
+    bool                    operator==(const ConfigOptionBoolsTempl &rhs) const throw() { return this->values == rhs.values; }
+    bool                    operator< (const ConfigOptionBoolsTempl &rhs) const throw() { return this->values <  rhs.values; }
+    // Could a special "nil" value be stored inside the vector, indicating undefined value?
+    bool 					nullable() const override { return NULLABLE; }
+    // Special "nil" value to be stored into the vector if this->supports_nil().
+    static unsigned char    NIL_VALUE() { return std::numeric_limits<unsigned char>::max(); }
+    // A scalar is nil, or all values of a vector are nil.
+    bool is_nil(int32_t idx = -1) const override
+    {
+        if (idx < 0) {
+            for (uint8_t v : this->values)
+                if (v != NIL_VALUE())
+                    return false;
+            return true;
+        } else {
+            return idx < int32_t(values.size()) ? NIL_VALUE() == this->values[idx] :
+                   values.empty()               ? NIL_VALUE() == this->default_value :
+                                                  NIL_VALUE() == this->values.front();
+        }
+    }
+>>>>>>> origin/master
     bool                    get_bool(size_t idx = 0) const override { return ConfigOptionVector<unsigned char>::get_at(idx) != 0; }
     int32_t                 get_int(size_t idx = 0) const override { return ConfigOptionVector<unsigned char>::get_at(idx) != 0 ? 1 : 0; }
     double                  get_float(size_t idx = 0) const override { return ConfigOptionVector<unsigned char>::get_at(idx) != 0 ? 1. : 0.; }

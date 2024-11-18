@@ -510,8 +510,12 @@ public:
         //check if it need an update. Avoid doing a gui update each ms.
         {
             std::lock_guard<std::mutex> lock(m_last_status_mutex);
+<<<<<<< HEAD
             if ((flags & SlicingStatus::FORCE_SHOW) == 0 && (flags & SlicingStatus::SECONDARY_STATE) != 0 &&
                 message != m_last_status_message) {
+=======
+            if ((flags & SlicingStatus::SECONDARY_STATE) != 0 && message != m_last_status_message) {
+>>>>>>> origin/master
                 std::chrono::time_point<std::chrono::system_clock> current_time = std::chrono::system_clock::now();
                 if ((static_cast<std::chrono::duration<double>>(current_time - PrintBase::m_last_status_update))
                             .count() > 0.002 &&

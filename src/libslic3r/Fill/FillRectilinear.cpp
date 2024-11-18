@@ -3279,7 +3279,10 @@ Polylines FillSupportBase::fill_surface(const Surface *surface, const FillParams
         coord_t line_spacing = _line_spacing_for_density(params);
         // Create infill lines, keep them vertical.
         make_fill_lines(poly_with_offset, rotate_vector.second.rotated(- rotate_vector.first), 0, 0, line_spacing, 0, fill_lines, params);
+<<<<<<< HEAD
         assert_valid(fill_lines);
+=======
+>>>>>>> origin/master
 
         // Both the poly_with_offset and polylines_out are rotated, so the infill lines are strictly vertical.
         connect_base_support(std::move(fill_lines), poly_with_offset.polygons_outer, poly_with_offset.bounding_box_outer(), polylines_out,  _line_spacing_for_density(params), params);

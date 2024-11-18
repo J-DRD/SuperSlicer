@@ -2891,9 +2891,17 @@ bool GLCanvas3D::is_gcode_preview_dirty(const GCodeProcessorResult& gcode_result
 }
 
 void GLCanvas3D::load_gcode_preview(const GCodeProcessorResult     &gcode_result,
+<<<<<<< HEAD
                                     const std::vector<std::string> &str_tool_colors)
 {
     if (last_showned_gcode != gcode_result.computed_timestamp || !m_gcode_viewer.is_loaded(gcode_result)) {
+=======
+                                    const std::vector<std::string> &str_tool_colors,
+                                    bool                            force_gcode_color_recompute)
+{
+    if (last_showned_gcode != gcode_result.computed_timestamp || force_gcode_color_recompute ||
+        !m_gcode_viewer.is_loaded(gcode_result)) {
+>>>>>>> origin/master
         last_showned_gcode = gcode_result.computed_timestamp;
         m_gcode_viewer.load(gcode_result, *this->fff_print());
     }
@@ -7026,6 +7034,7 @@ Vec3d GLCanvas3D::_mouse_to_3d(const Point& mouse_pos, float* z)
     if (m_canvas == nullptr)
         return Vec3d(DBL_MAX, DBL_MAX, DBL_MAX);
 
+<<<<<<< HEAD
     if (z == nullptr) {
         const SceneRaycaster::HitResult hit = m_scene_raycaster.hit(mouse_pos.cast<double>(), wxGetApp().plater()->get_camera(), nullptr);
         return hit.is_valid() ? hit.position.cast<double>() : _mouse_to_bed_3d(mouse_pos);
@@ -7037,6 +7046,32 @@ Vec3d GLCanvas3D::_mouse_to_3d(const Point& mouse_pos, float* z)
         igl::unproject(Vec3d(mouse_pos.x(), viewport[3] - mouse_pos.y(), *z), camera.get_view_matrix().matrix(), camera.get_projection_matrix().matrix(), viewport, out);
         return out;
     }
+=======
+    const Camera& camera = wxGetApp().plater()->get_camera();
+    Matrix4d modelview = camera.get_view_matrix().matrix();
+    Matrix4d projection= camera.get_projection_matrix().matrix();
+    Vec4i32 viewport(camera.get_viewport().data());
+
+    GLint y = viewport[3] - (GLint)mouse_pos(1);
+    double mouse_z;
+    if (z == nullptr) {
+        GLuint render_z;
+        if(sizeof(render_z)==2)
+            glsafe(::glReadPixels((GLint) mouse_pos(0), y, 1, 1, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, (void *) &render_z));
+        else if(sizeof(render_z)==4)
+            glsafe(::glReadPixels((GLint) mouse_pos(0), y, 1, 1, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, (void *) &render_z));
+        else {
+            BOOST_LOG_TRIVIAL(error) << "error, opengl depth buffer of odd size.";
+        }
+        mouse_z = (double(render_z)/std::numeric_limits<GLuint>::max());
+    } else {
+        mouse_z = *z;
+    }
+
+    Vec3d out;
+    igl::unproject(Vec3d(mouse_pos(0), y, mouse_z), modelview, projection, viewport, out);
+    return out;
+>>>>>>> origin/master
 }
 
 Vec3d GLCanvas3D::_mouse_to_bed_3d(const Point& mouse_pos)
@@ -7830,6 +7865,7 @@ void GLCanvas3D::_set_warning_notification(EWarning warning, bool state)
         error = ErrorType::PLATER_ERROR;
         break;
     case EWarning::PrintWarning: text = ""; error = ErrorType::PLATER_WARNING; break;
+<<<<<<< HEAD
     case EWarning::GCodeConflict: {
         const ConflictResultOpt& conflict_result = m_gcode_viewer.get_conflict_result();
         if (!conflict_result.has_value()) { break; }
@@ -7843,6 +7879,8 @@ void GLCanvas3D::_set_warning_notification(EWarning warning, bool state)
         error = ErrorType::SLICING_ERROR;
         break;
     }
+=======
+>>>>>>> origin/master
     }
     auto& notification_manager = *wxGetApp().plater()->get_notification_manager();
 

@@ -259,6 +259,7 @@ Points filter_points_by_vectors(const Points &poly, FilterFn filter)
     return out;
 }
 
+<<<<<<< HEAD
 template<typename ConvexConcaveFilterFn>
 Points filter_convex_concave_points_by_angle_threshold(const Points &poly, double angle_threshold, ConvexConcaveFilterFn convex_concave_filter)
 {
@@ -351,6 +352,11 @@ std::vector<size_t> Polygon::concave_points_idx(double angle_threshold) const
 // Projection of a point onto the polygon. Return {Point, pt_idx}
 std::pair<Point, size_t> Polygon::point_projection(const Point &point) const
 {
+=======
+// Projection of a point onto the polygon.
+std::pair<Point, size_t> Polygon::point_projection(const Point &point) const
+{
+>>>>>>> origin/master
     size_t pt_idx = size_t(-1);
     Point proj = point;
     double dmin = std::numeric_limits<double>::max();

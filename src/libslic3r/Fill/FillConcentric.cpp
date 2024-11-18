@@ -374,6 +374,7 @@ FillConcentricWGapFill::fill_surface_extrusion(
                 //    }
                 //    //goto_next_polyline:
                 //}
+<<<<<<< HEAD
                 bool fill_bridge = good_role.is_bridge() || params.flow.bridge();
                 // allow bridged gapfill, mostly for support bottom interface.
                 assert(!good_role.is_bridge());
@@ -382,6 +383,16 @@ FillConcentricWGapFill::fill_surface_extrusion(
                     if (!gap_fill_entities.empty()) {
                         // set role if needed
                         if (fill_bridge || (good_role != ExtrusionRole::SolidInfill && good_role != ExtrusionRole::TopSolidInfill)) {
+=======
+                bool fill_bridge = is_bridge(good_role) || params.flow.bridge();
+                // allow bridged gapfill, mostly for support bottom interface.
+                assert(!is_bridge(good_role));
+                if (!polylines.empty()) {
+                    ExtrusionEntitiesPtr gap_fill_entities = Geometry::thin_variable_width(polylines, erGapFill, params.flow, scale_t(params.config->get_computed_value("resolution_internal")), true);
+                    if (!gap_fill_entities.empty()) {
+                        // set role if needed
+                        if (fill_bridge || (good_role != erSolidInfill && good_role != erTopSolidInfill)) {
+>>>>>>> origin/master
                             ExtrusionSetRole set_good_role(good_role);
                             for (ExtrusionEntity* ptr : gap_fill_entities)
                                 ptr->visit(set_good_role);

@@ -664,8 +664,13 @@ WipeTower::WipeTower(const PrintConfig& config, const PrintObjectConfig& default
     }
     // Read absolute value of first layer speed, if given as percentage,
     // it is taken over wipe_tower_speed.
+<<<<<<< HEAD
     m_first_layer_speed = default_object_config.first_layer_speed.get_abs_value(m_speed);
     if (m_first_layer_speed <= 0.f) { // just to make sure autospeed doesn't break it.
+=======
+    m_first_layer_speed = config.first_layer_speed.get_abs_value(m_speed);
+    if (m_first_layer_speed == 0.f) { // just to make sure autospeed doesn't break it.
+>>>>>>> origin/master
         m_first_layer_speed = m_speed;
     }
 
@@ -1345,12 +1350,16 @@ void WipeTower::toolchange_Wipe(
     if (this->m_config->filament_max_speed.get_at(this->m_current_tool) > 0) {
         max_speed = float(this->m_config->filament_max_speed.get_at(this->m_current_tool));
     }
+<<<<<<< HEAD
     float target_speed = m_speed;
     if (is_first_layer() && m_first_layer_speed > 0)
         target_speed = m_first_layer_speed;
     if (target_speed <= 0)
         target_speed = m_infill_speed;
     target_speed = std::min(max_speed, target_speed * 60.f);
+=======
+    const float target_speed = std::min(max_speed, (is_first_layer() ? m_first_layer_speed : m_speed));
+>>>>>>> origin/master
     float wipe_speed = std::min(max_speed, float(m_config->wipe_tower_wipe_starting_speed.get_abs_value(target_speed)));
     if (wipe_speed <= 0) {
         wipe_speed = target_speed;

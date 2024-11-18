@@ -22,7 +22,11 @@ Clone the respository. Use a directory relatively close to the drive root, so th
 ```
 c:> mkdir src
 c:> cd src
+<<<<<<< HEAD
 c:\src> git clone https://github.com/Slic3r/Slic3r.git
+=======
+c:\src> git clone https://github.com/supermerill/SuperSlicer.git
+>>>>>>> origin/master
 ```
 
 
@@ -94,7 +98,11 @@ c:\local\Slic3r>build_win.bat -d=..\Slic3r-deps -r=console
 The build script will run for a while and automatically perform the following steps:
 1. Configure and build [deps](#compile-the-dependencies) as RelWithDebInfo with `c:\local\Slic3r-deps` as the destination directory
 2. Configure and build all [application targets](#compile-slic3r) as RelWithDebInfo
+<<<<<<< HEAD
 3. Launch the resulting `slic3r-console.exe` binary
+=======
+3. Launch the resulting `superslicer-console.exe` binary
+>>>>>>> origin/master
 
 You can change the above command line options to do things like:
 * Change the destination for the dependencies by pointing `-d` to a different directory such as: `build_win.bat -d=s:\Slic3rDeps`

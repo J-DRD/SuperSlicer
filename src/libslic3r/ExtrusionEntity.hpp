@@ -643,14 +643,21 @@ struct HasThisRoleVisitor : public HasRoleVisitor{
 
 //call simplify for all paths.
 class ConfigOptionFloatOrPercent;
+<<<<<<< HEAD
 class SimplifyVisitor : public ExtrusionVisitor{
     ArcFittingType                    m_use_arc_fitting;
     coordf_t                          m_scaled_resolution;
+=======
+class SimplifyVisitor : public ExtrusionVisitorRecursive {
+    bool m_use_arc_fitting;
+    coordf_t m_scaled_resolution;
+>>>>>>> origin/master
     const ConfigOptionFloatOrPercent* m_arc_fitting_tolearance;
     // when an entity is too small, this is set to true do the collection that is higher in the stack can merge & delete.
     coord_t                           m_min_path_size = 0;
     bool                              m_last_deleted = false;
 public:
+<<<<<<< HEAD
     using ExtrusionVisitor::use;
     SimplifyVisitor(coordf_t scaled_resolution, ArcFittingType use_arc_fitting, const ConfigOptionFloatOrPercent *arc_fitting_tolearance)
         : m_scaled_resolution(scaled_resolution), m_use_arc_fitting(use_arc_fitting), m_arc_fitting_tolearance(arc_fitting_tolearance)
@@ -670,6 +677,11 @@ public:
         use(coll);
     }
     bool is_valid() { return !m_last_deleted; }
+=======
+    SimplifyVisitor(coordf_t scaled_resolution, bool use_arc_fitting, const ConfigOptionFloatOrPercent* arc_fitting_tolearance) : m_scaled_resolution(scaled_resolution), m_use_arc_fitting(use_arc_fitting), m_arc_fitting_tolearance(arc_fitting_tolearance){}
+    virtual void use(ExtrusionPath& path) override;
+    virtual void use(ExtrusionPath3D& path3D) override;
+>>>>>>> origin/master
 };
 class GetPathsVisitor : public ExtrusionVisitorRecursive {
 public:

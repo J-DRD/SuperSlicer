@@ -329,6 +329,7 @@ public:
     bool         is_valid() const;
     bool         is_closed() const { return this->m_path.front().point == this->m_path.back().point; }
 
+<<<<<<< HEAD
     bool                                has_arc() const;
     // point count in the path
     size_t                              size() const { return m_path.size(); }
@@ -336,6 +337,20 @@ public:
     // get the point at index i in the path (i<size())
     const Point &                       get_point(size_t i) const { return m_path[i].point; }
     const Geometry::ArcWelder::Segment &get_arc(size_t i) const { return m_path[i]; }
+=======
+    //multipoint methods
+    const Point& front() const { return Polyline::front(); }
+    const Point& back() const { return Polyline::back(); }
+    Lines lines() const { return Polyline::lines(); }
+    size_t size() const { return Polyline::size(); }
+    bool   empty() const { return Polyline::empty(); }
+    double length() const { return Polyline::length(); }
+    bool   is_valid() const { return Polyline::is_valid(); }
+    int  find_point(const Point& point) const { return Polyline::find_point(point); }
+    int  find_point(const Point& point, const double scaled_epsilon) const { return Polyline::find_point(point, scaled_epsilon); }
+    int  closest_point_index(const Point& point) const { return Polyline::closest_point_index(point); }
+    std::pair<Point, size_t> point_projection(const Point& point) const { return Polyline::point_projection(point); }
+>>>>>>> origin/master
 
     //works on points only (be careful)
     bool split_at_index(const size_t index, ArcPolyline &p1, ArcPolyline &p2) const;

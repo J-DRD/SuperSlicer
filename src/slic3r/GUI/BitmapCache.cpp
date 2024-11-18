@@ -12,8 +12,11 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/log/trivial.hpp>
+<<<<<<< HEAD
 #include <boost/nowide/cstdio.hpp>
 #include <boost/algorithm/string/replace.hpp>
+=======
+>>>>>>> origin/master
 
 #ifdef __WXGTK2__
     // Broken alpha workaround

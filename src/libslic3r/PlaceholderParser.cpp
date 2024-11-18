@@ -1122,7 +1122,11 @@ namespace client
                 if (!vector_opt->is_extruder_size())
                     ctx->throw_exception("Referencing a vector variable when scalar is expected", opt.it_range);
             }
+<<<<<<< HEAD
 
+=======
+            const ConfigOptionDef* opt_def = nullptr;
+>>>>>>> origin/master
             switch (opt.opt->type()) {
             case coFloat:   output.set_d(opt.opt->get_float());   break;
             case coInt:     output.set_i(opt.opt->get_int());     break;
@@ -1173,9 +1177,15 @@ namespace client
                 break;
             }
             case coInts:
+<<<<<<< HEAD
                 vector_opt = static_cast<const ConfigOptionVectorBase*>(opt.opt);
                 if (vector_opt->is_extruder_size()) {
                     output.set_i(((ConfigOptionVectorBase*)opt.opt)->get_int(int(ctx->current_extruder_id)));
+=======
+                opt_def = print_config_def.get(opt_key);
+                if (opt_def && opt_def->is_vector_extruder) {
+                    output.set_i(int(((ConfigOptionVectorBase*)opt.opt)->get_float(int(ctx->current_extruder_id))));
+>>>>>>> origin/master
                     break;
                 } else
                     ctx->throw_exception("Unknown scalar variable type", opt.it_range);

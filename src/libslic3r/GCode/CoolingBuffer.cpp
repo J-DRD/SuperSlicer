@@ -92,6 +92,7 @@ struct CoolingLine
         TYPE_G2G3_R             = 1 << 24,
         // Would be TYPE_ADJUSTABLE, but the block of G-code lines has zero extrusion length, thus the block
         // cannot have its speed adjusted. This should not happen (sic!). (delete the block if no g1)
+<<<<<<< HEAD
         TYPE_ADJUSTABLE_EMPTY   = 1 << 25,
         // Custom fan speed (introduced for overhang fan speed)
         TYPE_SET_FAN_SPEED      = 1 << 26,
@@ -100,6 +101,12 @@ struct CoolingLine
         TYPE_RESET_MIN_FAN_SPEED    = 1 << 29,    };
     static inline GCodeExtrusionRole to_extrusion_role(uint32_t type) {
         return GCodeExtrusionRole(uint8_t(type & 0x1F));
+=======
+        TYPE_ADJUSTABLE_EMPTY   = 1 << 22,
+    };
+    static inline ExtrusionRole to_extrusion_role(uint32_t type) {
+        return ExtrusionRole(uint8_t(type & 0x1F));
+>>>>>>> origin/master
     }
 
     CoolingLine(unsigned int type, size_t  line_start, size_t  line_end) :
@@ -1266,6 +1273,7 @@ std::string CoolingBuffer::apply_layer_cooldown(
                     new_gcode.append(end, line_end - end);
                 }
             }
+<<<<<<< HEAD
             if (modify) {
                 if (!comment_speed.empty()) {
                     assert(new_gcode.back() == '\n');
@@ -1281,6 +1289,13 @@ std::string CoolingBuffer::apply_layer_cooldown(
                 boost::replace_all(deleted, "\n", "");
                 new_gcode.append(std::string("; deleted empty line: ") + deleted);
             }
+=======
+        } else if(line->type == CoolingLine::TYPE_ADJUSTABLE_EMPTY) {
+            // nothing useful, don't write it (an extrusion that don't move because it wasn't printed as it's too small).
+            std::string deleted(line_start, line_end - line_start);
+            boost::replace_all(deleted, "\n", "");
+            new_gcode.append(std::string("; deleted stuff: ") + deleted);
+>>>>>>> origin/master
         } else {
             new_gcode.append(line_start, line_end - line_start);
         }

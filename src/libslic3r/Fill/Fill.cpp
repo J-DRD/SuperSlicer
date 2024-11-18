@@ -1131,6 +1131,7 @@ void Layer::make_fills(FillAdaptive::Octree* adaptive_fill_octree, FillAdaptive:
                     for(auto &t : temp) real_surface += t.area();
                     assert(compute_volume.volume < unscaled(unscaled(surface_fill.surface.area())) * surface_fill.params.layer_height * surface_fill.params.flow_mult + EPSILON);
                     double area = unscaled(unscaled(real_surface));
+<<<<<<< HEAD
                     if(surface_fill.surface.has_pos_top())
                         area *= surface_fill.params.config->fill_top_flow_ratio.get_abs_value(1);
                     //TODO: over-bridge mod
@@ -1146,6 +1147,13 @@ void Layer::make_fills(FillAdaptive::Octree* adaptive_fill_octree, FillAdaptive:
                                 area < std::max(1., surface_fill.params.config->solid_infill_below_layer_area.value));
                         }
                     }
+=======
+                    assert(compute_volume.volume <= area * surface_fill.params.layer_height * 1.001 || f->debug_verify_flow_mult <= 0.8);
+                    if(compute_volume.volume > 0) //can fail for thin regions
+                        assert(compute_volume.volume >= area * surface_fill.params.layer_height * 0.999 || f->debug_verify_flow_mult >= 1.3 || f->debug_verify_flow_mult == 0 // sawtooth output more filament,as it's 3D (debug_verify_flow_mult==0)
+                            || area < std::max(1.,surface_fill.params.config->solid_infill_below_area.value));
+                }
+>>>>>>> origin/master
 #endif
             }
         }
@@ -1495,8 +1503,12 @@ void Layer::make_ironing()
 
         // Create the filler object.
         fill.init_spacing(ironing_params.line_spacing, fill_params);
+<<<<<<< HEAD
         fill.can_angle_cross = region_config.fill_angle_cross.value;
         fill.angle = float(ironing_params.angle);
+=======
+        fill.angle = float(ironing_params.angle + 0.25 * M_PI);
+>>>>>>> origin/master
         fill.link_max_length = scale_t(3. * fill.get_spacing());
         double extrusion_height = ironing_params.height * fill.get_spacing() / nozzle_dmr;
         //FIXME FLOW decide if it's good

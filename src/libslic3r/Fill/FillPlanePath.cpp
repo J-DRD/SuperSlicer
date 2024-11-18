@@ -84,6 +84,7 @@ void FillPlanePath::_fill_surface_single(
 {
     expolygon.rotate(-direction.first);
 
+<<<<<<< HEAD
     //FIXME Vojtech: We are not sure whether the user expects the fill patterns on visible surfaces to be aligned across all the islands of a single layer.
     // One may align for this->centered() to align the patterns for Archimedean Chords and Octagram Spiral patterns.
     const bool align = params.density < 0.995;
@@ -99,6 +100,15 @@ void FillPlanePath::_fill_surface_single(
         snug_bounding_box;
 
     Point shift = this->centered() ? 
+=======
+	coord_t distance_between_lines = scale_t(this->get_spacing() / params.density);
+    
+    // align infill across layers using the object's bounding box
+    // Rotated bounding box of the whole object.
+    BoundingBox bounding_box = this->bounding_box.rotated(- direction.first);
+    
+    Point shift = this->_centered() ? 
+>>>>>>> origin/master
         bounding_box.center() :
         bounding_box.min;
     expolygon.translate(-double(shift.x()), -double(shift.y()));

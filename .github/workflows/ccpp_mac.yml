@@ -27,14 +27,26 @@ jobs:
         sudo make install
         automake --version
     - name: build deps & slicer
+<<<<<<< HEAD
       run: ./BuildMacOS.sh -dsi
+=======
+      run: ./BuildMacOS.sh
+    - name: copy zstd
+      run: cp /usr/local/opt/zstd/lib/libzstd.1.dylib ./build/pack/${{ github.event.repository.name }}/${{ github.event.repository.name }}.app/Contents/MacOS/libzstd.1.dylib
+    - name: relink zstd
+      run: install_name_tool -change /usr/local/opt/zstd/lib/libzstd.1.dylib  @executable_path/libzstd.1.dylib ./build/pack/${{ github.event.repository.name }}/${{ github.event.repository.name }}.app/Contents/MacOS/${{ github.event.repository.name }}
+    - name: create the dmg
+      run: |
+        hdiutil create -ov -fs HFS+ -volname ${{ github.event.repository.name }} -srcfolder "build/pack/${{ github.event.repository.name }}" temp.dmg
+        hdiutil convert temp.dmg -format UDZO -o ${{ github.event.repository.name }}.dmg
+>>>>>>> origin/master
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: nightly_macos.tar
-        path: build/${{ github.event.repository.name }}.tar
+        name: nightly_macos.app
+        path: build/pack/${{ github.event.repository.name }}/${{ github.event.repository.name }}.app
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
         name: nightly_macos.dmg
-        path: build/${{ github.event.repository.name }}.dmg
+        path: ${{ github.event.repository.name }}.dmg

@@ -1283,11 +1283,20 @@ void SeamPlacer::calculate_overhangs_and_layer_embedding(const PrintObject *po) 
                     for (SeamCandidate &perimeter_point : layers[layer_idx].points) {
                         Vec2f point = Vec2f { perimeter_point.position.head<2>() };
                         if (prev_layer_distancer.get() != nullptr) {
+<<<<<<< HEAD
                             perimeter_point.overhang = prev_layer_distancer->distance_from_lines<true>(point.cast<double>());
                                     // Seams: overhangs: don't remove overhang_angle_threshold, it seems to create artifacts. supermerill/SuperSlicer#4217
                                     // + 0.6f * perimeter_point.perimeter.flow_width
                                     // - tan(SeamPlacer::overhang_angle_threshold)
                                     //         * po->layers()[layer_idx]->height;
+=======
+                            perimeter_point.overhang = prev_layer_distancer->distance_from_perimeter(point);
+
+                            //perimeter_point.overhang = perimeter_point.overhang + 0.6f * perimeter_point.perimeter.flow_width
+                            //        - tan(SeamPlacer::overhang_angle_threshold)
+                            //                * po->layers()[layer_idx]->height;
+
+>>>>>>> origin/master
                             perimeter_point.overhang =
                                     perimeter_point.overhang < 0.0f ? 0.0f : perimeter_point.overhang;
                         }
@@ -1837,6 +1846,7 @@ std::tuple<bool,std::optional<Vec3f>> get_seam_from_modifier(const Layer& layer,
                     SeamPlacerImpl::cache_volume_to_bb[v] = bb_volume;
                 }
 
+<<<<<<< HEAD
                 double test_lambda_z = 0;
                 Vec3d center_pos = (bb_volume.min + bb_volume.max) / 2;
                 // remove shift, as we used the transform. that way, we have a correct z vs the layer height, and same for the x and y vs polygon.
@@ -1855,6 +1865,10 @@ std::tuple<bool,std::optional<Vec3f>> get_seam_from_modifier(const Layer& layer,
                     }
                 }
                 Point xy_lambda(scale_(center_pos.x()), scale_(center_pos.y()));
+=======
+                double test_lambda_z = std::abs(layer.print_z - test_lambda_pos.z());
+                Point xy_lambda(scale_(test_lambda_pos.x()), scale_(test_lambda_pos.y()));
+>>>>>>> origin/master
                 Point nearest = polygon.point_projection(xy_lambda).first;
                 Vec3d polygon_3dpoint{ unscaled(nearest.x()), unscaled(nearest.y()), (double)layer.print_z };
                 double test_lambda_dist = (polygon_3dpoint - center_pos).norm();

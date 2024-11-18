@@ -81,6 +81,7 @@ std::string GCodeWriter::get_default_color_change_gcode(const GCodeConfig &confi
 
 void GCodeWriter::apply_print_config(const PrintConfig &print_config)
 {
+    this->multiple_extruders = false;
     this->config.apply(print_config, true);
     m_extrusion_axis = get_extrusion_axis(this->config);
     m_single_extruder_multi_material = print_config.single_extruder_multi_material.value;
@@ -557,8 +558,16 @@ std::string GCodeWriter::travel_to_xy(const Vec2d &point, const double speed, co
     if ((speed > 0) & (speed < travel_speed))
         travel_speed = speed;
 
+    std::string str_x = XYZ_NUM(point.x());
+    std::string str_y = XYZ_NUM(point.y());
+    if (!m_pos_str_x.empty() && m_pos_str_x == str_x && m_pos_str_y == str_y) {
+        //if point too close to the other, then do not write it, it's useless.
+        return "";
+    }
+
     m_pos.x() = point.x();
     m_pos.y() = point.y();
+<<<<<<< HEAD:src/libslic3r/GCode/GCodeWriter.cpp
     GCodeG1Formatter w(this->get_default_gcode_formatter());
     if (!w.emit_xy(point, m_pos_str_x, m_pos_str_y)) {
         //if point too close to the other, then do not write it, it's useless.
@@ -567,6 +576,22 @@ std::string GCodeWriter::travel_to_xy(const Vec2d &point, const double speed, co
     w.emit_f(travel_speed * 60);
     w.emit_comment(this->config.gcode_comments, comment);
     return write_acceleration() + w.string();
+=======
+    m_pos_str_x = std::move(str_x);
+    m_pos_str_y = std::move(str_y);
+
+//    GCodeG1Formatter w;
+//    w.emit_xy(point);
+//    w.emit_f(this->config.travel_speed.value * 60.0);
+//    w.emit_comment(this->config.gcode_comments, comment);
+//    return w.string();
+    gcode << "G1 X" << m_pos_str_x
+          <<   " Y" << m_pos_str_y
+          <<   " F" << F_NUM(travel_speed * 60);
+    COMMENT(comment);
+    gcode << "\n";
+    return gcode.str();
+>>>>>>> origin/master:src/libslic3r/GCodeWriter.cpp
 }
 
 std::string GCodeWriter::travel_arc_to_xy(const Vec2d& point, const Vec2d& center_offset, const bool is_ccw, const double speed, const std::string_view comment)
@@ -612,6 +637,15 @@ std::string GCodeWriter::travel_to_xyz(const Vec3d &point, bool is_lift, const d
         return this->travel_to_xy(to_2d(point), speed, comment);
     }
     
+<<<<<<< HEAD:src/libslic3r/GCode/GCodeWriter.cpp
+=======
+    /*  In all the other cases, we perform an actual XYZ move and cancel
+        the lift. */
+    m_lifted = 0;
+    m_pos = point;
+    m_pos_str_x = XYZ_NUM(point.x());
+    m_pos_str_y = XYZ_NUM(point.y());
+>>>>>>> origin/master:src/libslic3r/GCodeWriter.cpp
 
     //compute the speed
     double travel_speed = this->config.travel_speed.value;
@@ -637,6 +671,7 @@ std::string GCodeWriter::travel_to_xyz(const Vec3d &point, bool is_lift, const d
         m_lifted = 0;
     }
 
+<<<<<<< HEAD:src/libslic3r/GCode/GCodeWriter.cpp
     m_pos = point;
     
     GCodeG1Formatter w(this->get_default_gcode_formatter());
@@ -645,6 +680,12 @@ std::string GCodeWriter::travel_to_xyz(const Vec3d &point, bool is_lift, const d
         // //if point too close to the other, then do not write it, it's useless.
         // w = GCodeG1Formatter(this->get_default_gcode_formatter());
     }
+=======
+    std::ostringstream gcode;
+    gcode << write_acceleration();
+    gcode << "G1 X" << m_pos_str_x
+          << " Y" << m_pos_str_y;
+>>>>>>> origin/master:src/libslic3r/GCodeWriter.cpp
     if (config.z_step > SCALING_FACTOR)
         w.emit_axis('Z', point.z(), 6);
     else
@@ -703,6 +744,7 @@ bool GCodeWriter::will_move_z(double z) const
     return true;
 }
 
+<<<<<<< HEAD:src/libslic3r/GCode/GCodeWriter.cpp
 std::string GCodeWriter::extrude_to_xy(const Vec2d &point, double dE, const std::string_view comment)
 {
     assert(dE == dE);
@@ -725,6 +767,52 @@ std::string GCodeWriter::extrude_to_xy(const Vec2d &point, double dE, const std:
     }
     w.emit_comment(this->config.gcode_comments, comment);
     return write_acceleration() + w.string();
+=======
+std::pair<std::string, bool> GCodeWriter::_compute_de(double dE)
+{
+    bool        is_extrude = this->m_tool->extrude(dE) != 0;
+    std::string e_str;
+    if (is_extrude) {
+        // add missing de from rounding, compute the new rounding.
+        e_str            = E_NUM(m_tool->E() + this->m_de_left);
+        double written_e = atof(e_str.c_str());
+        is_extrude       = written_e != 0;
+        if (is_extrude) {
+            this->m_de_left = (m_tool->E() + this->m_de_left) - written_e;
+        } else {
+            this->m_de_left += dE;
+        }
+    }
+    return {e_str, is_extrude};
+}
+
+std::string GCodeWriter::extrude_to_xy(const Vec2d &point, double dE, const std::string &comment)
+{
+    assert(dE == dE);
+    assert(m_pos.x() != point.x() || m_pos.y() != point.y());
+    std::string str_x = XYZ_NUM(point.x());
+    std::string str_y = XYZ_NUM(point.y());
+    if (!m_pos_str_x.empty() && m_pos_str_x == str_x && m_pos_str_y == str_y) {
+        //if point too close to the other, then do not write it, it's useless.
+        this->m_de_left += dE;
+        return "";
+    }
+    m_pos.x() = point.x();
+    m_pos.y() = point.y();
+    m_pos_str_x = std::move(str_x);
+    m_pos_str_y = std::move(str_y);
+    auto [e_str, is_extrude] = this->_compute_de(dE);
+
+    std::ostringstream gcode;
+    gcode << write_acceleration();
+    gcode << "G1 X" << m_pos_str_x
+        << " Y" << m_pos_str_y;
+    if(is_extrude)
+        gcode <<    " " << m_extrusion_axis << e_str;
+    COMMENT(comment);
+    gcode << "\n";
+    return gcode.str();
+>>>>>>> origin/master:src/libslic3r/GCodeWriter.cpp
 }
 
 //BBS: generate G2 or G3 extrude which moves by arc
@@ -732,6 +820,7 @@ std::string GCodeWriter::extrude_to_xy(const Vec2d &point, double dE, const std:
 //center_offset is I and J axis
 std::string GCodeWriter::extrude_arc_to_xy(const Vec2d& point, const Vec2d& center_offset, double dE, const bool is_ccw, const std::string_view comment)
 {
+<<<<<<< HEAD:src/libslic3r/GCode/GCodeWriter.cpp
     assert(std::abs(point.x()) < 120000.);
     assert(std::abs(point.y()) < 120000.);
     assert(std::abs(center_offset.x()) < 12000000.);
@@ -742,16 +831,29 @@ std::string GCodeWriter::extrude_arc_to_xy(const Vec2d& point, const Vec2d& cent
     m_pos.y()             = point.y();
      auto [/*double*/ delta_e, /*double*/ e_to_write]  = this->m_tool->extrude(dE + this->m_de_left);
     bool is_extrude  = std::abs(delta_e) > 0.00000001;
+=======
+    m_pos.x() = point.x();
+    m_pos.y() = point.y();
+    m_pos_str_x = XYZ_NUM(point.x());
+    m_pos_str_y = XYZ_NUM(point.y());
+    auto [e_str, is_extrude] = this->_compute_de(dE);
+>>>>>>> origin/master:src/libslic3r/GCodeWriter.cpp
 
     GCodeG2G3Formatter w(this->config.gcode_precision_xyz.value, this->config.gcode_precision_e.value, is_ccw);
     bool has_x_y = w.emit_xy(point, m_pos_str_x, m_pos_str_y);
     assert(has_x_y);
     w.emit_ij(center_offset);
+<<<<<<< HEAD:src/libslic3r/GCode/GCodeWriter.cpp
     this->m_de_left += dE - delta_e;
     if (is_extrude) {
         double delta = w.emit_e(m_extrusion_axis, e_to_write);
         this->m_de_left += delta;
     }
+=======
+    if (is_extrude)
+        w.emit(m_extrusion_axis, e_str);
+    //BBS
+>>>>>>> origin/master:src/libslic3r/GCodeWriter.cpp
     w.emit_comment(this->config.gcode_comments, comment);
     return write_acceleration() + w.string();
 }
@@ -762,6 +864,7 @@ std::string GCodeWriter::extrude_to_xyz(const Vec3d &point, double dE, const std
     assert(std::abs(point.y()) < 120000.);
     assert(std::abs(point.z()) < 120000.);
     assert(dE == dE);
+<<<<<<< HEAD:src/libslic3r/GCode/GCodeWriter.cpp
     assert(point.z() >= m_pos.z());
     m_pos = point;
     m_lifted = 0;
@@ -777,6 +880,33 @@ std::string GCodeWriter::extrude_to_xyz(const Vec3d &point, double dE, const std
         if((delta < 0.00000000001) & (delta > -0.00000000001)) delta = 0;
         assert(delta == 0 ); // shoulde be already taken into account by m_tool->extrude
         this->m_de_left += delta;
+=======
+    m_pos.x() = point.x();
+    m_pos.y() = point.y();
+    m_pos_str_x = XYZ_NUM(point.x());
+    m_pos_str_y = XYZ_NUM(point.y());
+    m_lifted = 0;
+    auto [e_str, is_extrude] = this->_compute_de(dE);
+
+//    GCodeG1Formatter w;
+//    w.emit_xyz(point);
+//    w.emit_e(m_extrusion_axis, m_extruder->E());
+//    w.emit_comment(this->config.gcode_comments, comment);
+//    return w.string();
+    std::ostringstream gcode;
+    gcode << write_acceleration();
+    gcode << "G1 X" << m_pos_str_x
+        << " Y" << m_pos_str_y
+        << " Z" << XYZ_NUM(point.z() + m_pos.z());
+    if (is_extrude)
+            gcode <<    " " << m_extrusion_axis << e_str;
+    COMMENT(comment);
+    gcode << "\n";
+    // replace 'Z-0' by ' Z0'
+    std::string str = gcode.str();
+    if (auto it = str.find("Z-0 "); it != std::string::npos) {
+        str.replace(it, 2, "Z");
+>>>>>>> origin/master:src/libslic3r/GCodeWriter.cpp
     }
     w.emit_comment(this->config.gcode_comments, comment);
     return write_acceleration() + w.string();

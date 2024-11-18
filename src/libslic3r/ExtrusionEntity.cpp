@@ -10,7 +10,10 @@
 #include "ExPolygon.hpp"
 #include "ClipperUtils.hpp"
 #include "Config.hpp"
+<<<<<<< HEAD
 #include "Exception.hpp"
+=======
+>>>>>>> origin/master
 #include "Extruder.hpp"
 #include "Flow.hpp"
 #include <cmath>
@@ -204,8 +207,13 @@ bool ExtrusionLoop::split_at_vertex(const Point &point, const double scaled_epsi
                 if (idx < path->size() - 1) {
                     // new paths list starts with the second half of current path
                     ExtrusionPaths new_paths;
+<<<<<<< HEAD
                     ArcPolyline p1, p2;
                     path->polyline.split_at_index(idx, p1, p2);
+=======
+                    PolylineOrArc  p1, p2;
+                    path->polyline.split_at_index(idx, &p1, &p2);
+>>>>>>> origin/master
                     new_paths.reserve(this->paths.size() + 1);
                     {
                         ExtrusionPath p = *path;
@@ -231,8 +239,13 @@ bool ExtrusionLoop::split_at_vertex(const Point &point, const double scaled_epsi
                     this->paths = std::move(new_paths);
                 } else {
                     // last point
+<<<<<<< HEAD
                     assert((path)->last_point().coincides_with_epsilon(point));
                     assert((path + 1)->first_point().coincides_with_epsilon(point));
+=======
+                    assert( (path)->last_point().coincides_with_epsilon(point));
+                    assert( (path + 1)->first_point().coincides_with_epsilon(point));
+>>>>>>> origin/master
                     ExtrusionPaths new_paths;
                     new_paths.reserve(this->paths.size());
                     // then we add all paths until the end of current path list
@@ -247,7 +260,11 @@ bool ExtrusionLoop::split_at_vertex(const Point &point, const double scaled_epsi
                 // if first path - nothign to change.
                 // else, then impossible as it's also the last point of the previous path.
                 assert(path == this->paths.begin());
+<<<<<<< HEAD
                 assert(path->first_point().distance_to(point) <= scaled_epsilon);
+=======
+                assert(path->first_point().coincides_with_epsilon(point));
+>>>>>>> origin/master
             }
             assert(this->first_point().distance_to(point) <= scaled_epsilon);
             return true;
@@ -294,12 +311,21 @@ void ExtrusionLoop::split_at(const Point &point, bool prefer_non_overhang, const
         return;
     ExtrusionLoop::ClosestPathPoint close_p = get_closest_path_and_point(point, prefer_non_overhang);
     // Snap p to start or end of segment_idx if closer than scaled_epsilon.
+<<<<<<< HEAD
     //{
         const Point pt1 = this->paths[close_p.path_idx].polyline.get_point(close_p.segment_idx);
         const Point  pt2   = this->paths[close_p.path_idx].polyline.get_point(close_p.segment_idx + 1);
         // Use close_p.foot_pt instead of point for the comparison, as it's the one that will be used.
         double       d2_1 = (close_p.foot_pt - pt1).cast<double>().squaredNorm();
         double       d2_2 = (close_p.foot_pt - pt2).cast<double>().squaredNorm();
+=======
+    {
+        const Point *p1 = this->paths[path_idx].polyline.get_points().data() + segment_idx;
+        const Point *p2 = p1;
+        ++ p2;
+        double d2_1 = (p - *p1).cast<double>().squaredNorm();
+        double d2_2 = (p - *p2).cast<double>().squaredNorm();
+>>>>>>> origin/master
         const double thr2 = scaled_epsilon * scaled_epsilon;
         if (d2_1 < d2_2) {
             if (d2_1 < thr2)
@@ -311,12 +337,20 @@ void ExtrusionLoop::split_at(const Point &point, bool prefer_non_overhang, const
     //}
 
     // now split path_idx in two parts
+<<<<<<< HEAD
     const ExtrusionPath &path = this->paths[close_p.path_idx];
     assert(path.polyline.is_valid());
     ExtrusionPath        p1(path.attributes(), can_reverse());
     ExtrusionPath        p2(path.attributes(), can_reverse());
     path.polyline.split_at(close_p.foot_pt, p1.polyline, p2.polyline);
 
+=======
+    const ExtrusionPath &path = this->paths[path_idx];
+    ExtrusionPath p1(path.role(), path.mm3_per_mm, path.width, path.height, path.can_reverse());
+    ExtrusionPath p2(path.role(), path.mm3_per_mm, path.width, path.height, path.can_reverse());
+    path.polyline.split_at(p, &p1.polyline, &p2.polyline);
+    
+>>>>>>> origin/master
     if (this->paths.size() == 1) {
         if (p1.polyline.size() < 2) {
             this->paths.front().polyline = std::move(p2.polyline);
@@ -585,6 +619,7 @@ bool HasRoleVisitor::search(const ExtrusionEntitiesPtr &entities, HasRoleVisitor
 }
 
 void SimplifyVisitor::use(ExtrusionPath& path) {
+<<<<<<< HEAD
     if (m_min_path_size > 0 && path.length() < m_min_path_size) {
         m_last_deleted = true;
         return;
@@ -710,6 +745,12 @@ void SimplifyVisitor::use(ExtrusionEntityCollection &collection)
             --i;
         }
     }
+=======
+    path.simplify(m_scaled_resolution, m_use_arc_fitting, scale_d(m_arc_fitting_tolearance->get_abs_value(path.width)));
+}
+void SimplifyVisitor::use(ExtrusionPath3D& path3D) {
+    path3D.simplify(m_scaled_resolution, m_use_arc_fitting, scale_d(m_arc_fitting_tolearance->get_abs_value(path3D.width)));
+>>>>>>> origin/master
 }
 
 //class ExtrusionTreeVisitor : ExtrusionVisitor {

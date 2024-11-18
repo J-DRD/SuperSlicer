@@ -1309,7 +1309,11 @@ GCodeViewer::GCodeViewer()
             boost::property_tree::read_ini(ifs, tree_colors);
 
             for (size_t i = 0; i < Extrusion_Role_Colors.size(); i++) {
+<<<<<<< HEAD
                 std::string color_code = tree_colors.get<std::string>(gcode_extrusion_role_to_string((GCodeExtrusionRole)i));
+=======
+                std::string color_code = tree_colors.get<std::string>(ExtrusionEntity::role_to_string((ExtrusionRole)i));
+>>>>>>> origin/master
                 if (color_code.length() > 5) {
                     wxColour color;
                     color.Set((color_code[0] == '#') ? color_code : ("#" + color_code));

@@ -165,7 +165,11 @@ const GroupAndCategory& OptionsSearcher::get_group_and_category(const std::strin
 void OptionsSearcher::append_options(DynamicPrintConfig* config, Preset::Type type)
 {
     //const ConfigDef* defs = config->def();
+<<<<<<< HEAD
     auto emplace_option = [this, type](std::string grp_key, const int16_t id)
+=======
+    auto emplace_option = [this, type](const std::string grp_key, const int16_t idx)
+>>>>>>> origin/master
     {
 
         //TODO:test that new if
@@ -217,13 +221,21 @@ void OptionsSearcher::append_options(DynamicPrintConfig* config, Preset::Type ty
 
     for (std::string opt_key : config->keys())
     {
+<<<<<<< HEAD
         const ConfigOptionDef& opt = *config->option_def(opt_key);
+=======
+        //const ConfigOptionDef& opt = config->def()->options.at(opt_key);
+>>>>>>> origin/master
         //if (opt.mode != comNone && (opt.mode & current_tags) == 0)
         //    continue;
 
         int cnt = 0;
 
+<<<<<<< HEAD
         if ( (type == Preset::TYPE_SLA_MATERIAL || type == Preset::TYPE_FFF_FILAMENT || type == Preset::TYPE_PRINTER || opt.is_vector_extruder) && opt_key != "bed_shape")
+=======
+        if ( (type == Preset::TYPE_SLA_MATERIAL || type == Preset::TYPE_FFF_FILAMENT || type == Preset::TYPE_PRINTER) && opt_key != "bed_shape")
+>>>>>>> origin/master
             switch (config->option(opt_key)->type())
             {
             case coInts:	change_opt_key<ConfigOptionInts		>(opt_key, config, cnt);	break;
@@ -1082,7 +1094,11 @@ void SearchDialog::on_sys_color_changed()
 SearchListModel::SearchListModel(wxWindow* parent) : wxDataViewVirtualListModel(0)
 {
     int icon_id = 0;
+<<<<<<< HEAD
     for (const std::string icon : { "cog", "printer", "sla_printer", "spool", "resin", "notification_preferences" })
+=======
+    for (const std::string icon : { "cog", "printer", "sla_printer", "spool", "resin" })
+>>>>>>> origin/master
         m_icon[icon_id++] = ScalableBitmap(parent, icon);    
 }
 

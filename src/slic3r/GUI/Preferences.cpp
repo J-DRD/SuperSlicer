@@ -41,6 +41,10 @@
 #include "DesktopIntegrationDialog.hpp"
 #endif //__linux__
 
+#include <wx/display.h>
+#include <wx/notebook.h>
+#include <wx/scrolwin.h>
+
 namespace Slic3r {
 
 	static t_config_enum_names enum_names_from_keys_map(const t_config_enum_values& enum_keys_map)
@@ -784,8 +788,19 @@ void PreferencesDialog::build()
 			"If enabled, moving the mouse over the platter panel will move focus there, and away from the current control."),
 			app_config->get_bool("focus_platter_on_mouse"));
 
+<<<<<<< HEAD
 		activate_options_tab(m_tabid_2_optgroups.back().back(), 3);
 		m_tabid_2_optgroups.back().emplace_back(create_options_group(_L("Appearance"), tabs, 2));
+=======
+		def.label = L("Suppress to open hyperlink in browser");
+		def.type = coBool;
+		def.tooltip = (boost::format(_u8L("If enabled, %1% will not open hyperlinks in your browser.")) % SLIC3R_APP_NAME).str();
+		//def.tooltip = ("If enabled, the descriptions of configuration parameters in settings tabs wouldn't work as hyperlinks. "
+		//	"If disabled, the descriptions of configuration parameters in settings tabs will work as hyperlinks.");
+		def.set_default_value(new ConfigOptionBool{ app_config->get("suppress_hyperlinks") == "1" });
+		option = Option(def, "suppress_hyperlinks");
+		m_optgroups_gui.back()->append_single_option_line(option);
+>>>>>>> origin/master
 
 		
 		append_bool_option(m_tabid_2_optgroups.back().back(), "allow_auto_color_change",
@@ -985,11 +1000,21 @@ void PreferencesDialog::build()
 		m_optkey_to_optgroup[is_editor ? "splash_screen_editor" : "splash_screen_gcodeviewer"] = m_tabid_2_optgroups.back().back();
 		wxGetApp().sidebar().get_searcher().add_key(is_editor ? "splash_screen_editor" : "splash_screen_gcodeviewer", Preset::TYPE_PREFERENCES, m_tabid_2_optgroups.back().back()->config_category(), L("Preferences"), def_combobox);
     }
+<<<<<<< HEAD
 	
 	append_bool_option(m_tabid_2_optgroups.back().back(), "restore_win_position",
 		L("Restore window position on start"),
 		L("If enabled, Slic3r will be open at the position it was closed"),
 		app_config->get_bool("restore_win_position"));
+=======
+
+    def.label = L("Restore window position on start");
+    def.type = coBool;
+    def.tooltip = (boost::format(_u8L("If enabled, %1% will be open at the position it was closed")) % SLIC3R_APP_NAME).str();
+    def.set_default_value(new ConfigOptionBool{ app_config->get("restore_win_position") == "1" });
+    option = Option(def, "restore_win_position");
+    m_optgroups_gui.back()->append_single_option_line(option);
+>>>>>>> origin/master
 
 #ifdef WIN32
     // Clear Undo / Redo stack on new project
@@ -1203,6 +1228,22 @@ void PreferencesDialog::accept(wxEvent&)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	for (const std::string key : {	"default_action_on_close_application", 
+									"default_action_on_select_preset", 
+									"default_action_on_new_project" }) {
+	    auto it = m_values.find(key);
+		if (it != m_values.end() && it->second != "none" && app_config->get(key) != "none")
+			m_values.erase(it); // we shouldn't change value, if some of those parameters were selected, and then deselected
+	}
+	{
+	    auto it = m_values.find("default_action_on_dirty_project");
+		if (it != m_values.end() && !it->second.empty() && !app_config->get("default_action_on_dirty_project").empty())
+			m_values.erase(it); // we shouldn't change value, if this parameter was selected, and then deselected
+	}
+
+>>>>>>> origin/master
 #if 0 //#ifdef _WIN32 // #ysDarkMSW - Allow it when we deside to support the sustem colors for application
 	if (m_values.find("always_dark_color_mode") != m_values.end())
 		wxGetApp().force_sys_colors_update();

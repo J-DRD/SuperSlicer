@@ -55,7 +55,11 @@ public:
     }
     bool cross(const Line &line) const;
     bool cross(const Polyline &lines) const;
+<<<<<<< HEAD
     bool contains(const BoundingBoxBase<PointType, PointsType> &other) const {
+=======
+    bool contains(const BoundingBoxBase<PointClass> &other) const {
+>>>>>>> origin/master
         return contains(other.min) && contains(other.max);
     }
     bool overlap(const BoundingBoxBase<PointType, PointsType> &other) const {

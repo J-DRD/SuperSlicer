@@ -373,7 +373,11 @@ void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig* config)
 
     toggle_field("perimeter_bonding", config->opt_bool("external_perimeters_first") && !have_arachne && config->option("perimeter_overlap")->get_float() == 100.f && config->option("external_perimeter_overlap")->get_float() == 100.f);
 
+<<<<<<< HEAD
     for (auto el : {"perimeter_loop", "extra_perimeters_on_overhangs",
+=======
+    for (auto el : {"perimeter_loop", "extra_perimeters_overhangs",
+>>>>>>> origin/master
         "thin_perimeters", "perimeter_round_corners"})
         toggle_field(el, have_perimeters && !have_arachne);
     

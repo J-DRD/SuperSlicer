@@ -435,11 +435,16 @@ void Control::SetLayersTimes(const std::vector<float>& layers_times, float total
         if (m_layers_values.size() != m_layers_times.size())
             for (size_t i = m_layers_times.size(); i < m_layers_values.size(); i++)
                 m_layers_times.push_back(total_time);
+<<<<<<< HEAD
         m_ruler.update(m_layers_values.empty() ? m_values : m_layers_values, get_scroll_step());
         m_need_refresh_and_update = true;
     }
     else
         m_ruler.update(m_layers_values.empty() ? m_values : m_layers_values, get_scroll_step());
+=======
+        m_need_refresh_and_update = true;
+}
+>>>>>>> origin/master
 }
 
 void Control::SetLayersTimes(const std::vector<double>& layers_times)
@@ -450,6 +455,7 @@ void Control::SetLayersTimes(const std::vector<double>& layers_times)
         m_layers_times[i] += m_layers_times[i - 1];
 }
 
+<<<<<<< HEAD
 void Control::SetLayersAreas(const std::vector<float>& layers_areas)
 {
     m_layers_areas.clear();
@@ -457,6 +463,8 @@ void Control::SetLayersAreas(const std::vector<float>& layers_areas)
     for(float area : layers_areas)
         m_layers_areas.push_back(area);
 }
+=======
+>>>>>>> origin/master
 bool Control::ensure_correctly_filled() const
 {
     bool ok = true;
@@ -465,6 +473,7 @@ bool Control::ensure_correctly_filled() const
         assert(false);
         //m_layers_times.clear();
     }
+<<<<<<< HEAD
     if (!m_layers_areas.empty() && m_layers_areas.size() != m_values.size() && m_layers_areas.size() != m_values.size() - 1) {
         ok = false;
         assert(false);
@@ -473,6 +482,11 @@ bool Control::ensure_correctly_filled() const
     if (!m_layers_values.empty()) {
         //ok = m_is_wipe_tower;
         //assert(m_is_wipe_tower);
+=======
+    if (!m_layers_values.empty()) {
+        ok = m_is_wipe_tower;
+        assert(m_is_wipe_tower);
+>>>>>>> origin/master
         //m_is_wipe_tower = false;
     }
 
@@ -831,7 +845,11 @@ wxString Control::get_label(int tick, LabelType label_type/* = ltHeightWithLayer
     {
         if (label_type == ltEstimatedTime) {
             return time_idx < m_layers_times.size() ? short_and_splitted_time(get_time_dhms(m_layers_times[time_idx])) : "";
+<<<<<<< HEAD
             }
+=======
+        }
+>>>>>>> origin/master
         if (label_type == ltHeightWithLayer) {
             bool show_lheight = GUI::wxGetApp().app_config->get("show_layer_height_doubleslider") == "1";
             bool show_ltime = GUI::wxGetApp().app_config->get("show_layer_time_doubleslider") == "1";
@@ -865,6 +883,7 @@ wxString Control::get_label(int tick, LabelType label_type/* = ltHeightWithLayer
                     }
                 }
             }
+<<<<<<< HEAD
             if (show_larea && !m_layers_areas.empty()) {
                 if (m_layers_areas.size() + 1 >= m_values.size()) {
                     //assert(time_idx < m_layers_areas.size());
@@ -876,6 +895,8 @@ wxString Control::get_label(int tick, LabelType label_type/* = ltHeightWithLayer
                     }
                 }
             }
+=======
+>>>>>>> origin/master
             int nb_step_down = value - m_values.size() + nb_lines - 1;
             while (nb_step_down > 0) {
                 str = "\n" + str;
@@ -1742,13 +1763,20 @@ void Control::OnMotion(wxMouseEvent &event)
         // Set tooltips with information for each icon
         if (GUI::wxGetApp().is_editor()) {
             this->SetToolTip(get_tooltip(tick));
+<<<<<<< HEAD
             }
+=======
+        }
+>>>>>>> origin/master
     }
     m_need_refresh_and_update = false;
     Refresh();
     Update();
     event.Skip();
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
     if (action || m_need_fire_scroll_change) {
         m_need_fire_scroll_change = false;
         wxCommandEvent e(wxEVT_SCROLL_CHANGED);

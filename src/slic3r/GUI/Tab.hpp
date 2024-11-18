@@ -494,7 +494,11 @@ public:
 
     void            update_wiping_button_visibility();
 	virtual void	activate_option(const std::string& opt_key, const wxString& category);
+<<<<<<< HEAD
 	void			cache_config_diff(const std::vector<std::string>& selected_options, const DynamicPrintConfig* config = nullptr);
+=======
+	void			cache_config_diff(const std::vector<std::string>& selected_options);
+>>>>>>> origin/master
 	void			apply_config_from_cache();
 
 	const std::map<wxString, std::string>& get_category_icon_map() { return m_category_icon; }
@@ -552,7 +556,11 @@ public:
 	PrinterTechnology get_printer_technology() const override { return (m_type & Preset::Type::TYPE_TECHNOLOGY) == Preset::Type::TYPE_FFF ? PrinterTechnology::ptFFF : 
 																	   (m_type & Preset::Type::TYPE_TECHNOLOGY) == Preset::Type::TYPE_SLA ? PrinterTechnology::ptSLA :
 																	   PrinterTechnology::ptAny; }
+<<<<<<< HEAD
 	virtual void	activate_option(const std::string& opt_key, const wxString& category) override;
+=======
+    virtual void    activate_option(const std::string& opt_key, const wxString& category) override;
+>>>>>>> origin/master
     void set_freq_parent(wxWindow * freq_parent) { m_freq_parent = freq_parent;}
 	virtual PageShp create_options_page(const wxString &title, const std::string &icon) override;
 };

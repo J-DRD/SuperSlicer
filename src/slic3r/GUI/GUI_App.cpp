@@ -184,7 +184,7 @@ public:
             memDC.SelectObject(bitmap);
 
             memDC.SetFont(m_action_font);
-            ///            memDC.SetTextForeground(wxColour(237, 107, 33)); // ed6b21
+///            memDC.SetTextForeground(wxColour(237, 107, 33)); // ed6b21
             uint32_t color = Slic3r::GUI::wxGetApp().app_config->create_color(0.86f, 0.93f);
             memDC.SetTextForeground(wxColour(color & 0xFF, (color & 0xFF00) >> 8, (color & 0xFF0000) >> 16));
             memDC.DrawText(text, int(get_margin() * 2), m_action_line_y_position);
@@ -356,10 +356,16 @@ private:
             version = _L("Version") + " " + std::string(SLIC3R_VERSION_FULL);
 
             // credits infornation
+<<<<<<< HEAD
             credits = "\n" + title + " " +
                 _L("is based on PrusaSlicer by Prusa Research.") + "\n\n" +
                 _L("PrusaSlicer is based on Slic3r by Alessandro Ranellucci and the RepRap community.") + "\n\n" +
                 _L("Licensed under GNU AGPLv3.");
+=======
+            credits = _L("SuperSlicer is a skinned version of Slic3r, based on PrusaSlicer by Prusa and the original Slic3r by Alessandro Ranellucci & the RepRap community.") + "\n\n" +
+                        title + " " + _L("is licensed under the") + " " + _L("GNU Affero General Public License, version 3") + ".\n\n" +
+                        _L("Contributions by Vojtech Bubnik, Enrico Turri, Durand Remi, Oleksandra Iushchenko, Tamas Meszaros, Lukas Matena, Vojtech Kral, David Kocik and numerous others.");
+>>>>>>> origin/master
 
             title_font = version_font = credits_font = init_font;
         }
@@ -1358,14 +1364,20 @@ bool GUI_App::on_init_inner()
             boost::filesystem::path splash_screen_path = (boost::filesystem::path(Slic3r::resources_dir()) / "splashscreen" / file_name);
             if (boost::filesystem::exists(splash_screen_path)) {
                 wxString path_str = wxString::FromUTF8((splash_screen_path).string().c_str());
+<<<<<<< HEAD
                 // make a bitmap with dark grey banner on the left side
                 bmp = SplashScreen::MakeBitmap(wxBitmap(path_str, wxBITMAP_TYPE_JPEG), scrn_scaling);
+=======
+        // make a bitmap with dark grey banner on the left side
+                bmp = SplashScreen::MakeBitmap(wxBitmap(path_str, wxBITMAP_TYPE_JPEG));
+>>>>>>> origin/master
 
                 //get the artist name from metadata
-                int result;
-                void** ifdArray = nullptr;
-                ExifTagNodeInfo* tag;
+            int result;
+            void** ifdArray = nullptr;
+            ExifTagNodeInfo* tag;
                 ifdArray = exif_createIfdTableArray(path_str.c_str(), &result);
+<<<<<<< HEAD
                 if (result > 0 && ifdArray) {
                     tag = exif_getTagInfo(ifdArray, IFD_0TH, TAG_Artist);
                     if (tag) {
@@ -1376,9 +1388,17 @@ bool GUI_App::on_init_inner()
                                 artist = (_L("Artwork model by") + " " + artist_name);
                             }
                         }
+=======
+            if (result > 0 && ifdArray) {
+                tag = exif_getTagInfo(ifdArray, IFD_0TH, TAG_Artist);
+                if (tag) {
+                    if (!tag->error) {
+                        artist = (_L("Artwork model by") + " " + wxString::FromUTF8((char*)tag->byteData));
+>>>>>>> origin/master
                     }
                 }
             }
+        }
         }
 
         // Detect position (display) to show the splash screen
@@ -1399,10 +1419,15 @@ bool GUI_App::on_init_inner()
         }
 
         // make a bitmap with dark grey banner on the left side
+<<<<<<< HEAD
         if (!bmp.IsOk()) {
             bmp = SplashScreen::MakeBitmap(get_bmp_bundle(SLIC3R_APP_KEY, 600)->GetPreferredBitmapSizeAtScale(1.0), scrn_scaling);
         }
         scrn = new SplashScreen(bmp, scrn_scaling, wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_TIMEOUT, 4000, splashscreen_pos, artist);
+=======
+        scrn = new SplashScreen(bmp.IsOk() ? bmp : SplashScreen::MakeBitmap(create_scaled_bitmap(SLIC3R_APP_KEY, nullptr, 600)),
+                                wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_TIMEOUT, 4000, splashscreen_pos, artist);
+>>>>>>> origin/master
 
         if (!default_splashscreen_pos)
             // revert "restore_win_position" value if application wasn't crashed
@@ -2733,7 +2758,11 @@ bool GUI_App::load_language(wxString language, bool initial)
     }
 #endif
 
+<<<<<<< HEAD
     if (! wxLocale::IsAvailable(language_info->Language)) {
+=======
+    if (!wxLocale::IsAvailable(language_info->Language)) {
+>>>>>>> origin/master
         // Loading the language dictionary failed.
         wxString message = "Switching " SLIC3R_APP_NAME " to language " + language_info->CanonicalName + " failed.";
 #if !defined(_WIN32) && !defined(__APPLE__)
@@ -2973,7 +3002,46 @@ void GUI_App::add_config_menu(wxMenuBar *menu)
             break;
         case ConfigMenuPreferences:
         {
+<<<<<<< HEAD
             open_preferences();
+=======
+            bool app_layout_changed = false;
+            {
+                // the dialog needs to be destroyed before the call to recreate_GUI()
+                // or sometimes the application crashes into wxDialogBase() destructor
+                // so we put it into an inner scope
+                PreferencesDialog dlg(mainframe);
+              try{
+                dlg.ShowModal();
+                app_layout_changed = dlg.settings_layout_changed();
+                if (dlg.seq_top_layer_only_changed())
+                    this->plater_->refresh_print();
+
+                if (dlg.recreate_GUI()) {
+                    recreate_GUI(_L("Restart application") + dots);
+                    return;
+                }
+#ifdef _WIN32
+                if (is_editor()) {
+                    if (app_config->get("associate_3mf") == "1")
+                        associate_3mf_files();
+                    if (app_config->get("associate_stl") == "1")
+                        associate_stl_files();
+                }
+                else {
+                    if (app_config->get("associate_gcode") == "1")
+                        associate_gcode_files();
+                }
+#endif // _WIN32
+              } catch (std::exception &) {}
+            }
+            if (app_layout_changed) {
+                // hide full main_sizer for mainFrame
+                mainframe->GetSizer()->Show(false);
+                mainframe->update_layout();
+                mainframe->select_tab(MainFrame::ETabType::LastPlater);
+            }
+>>>>>>> origin/master
             break;
         }
         case ConfigMenuLanguage:

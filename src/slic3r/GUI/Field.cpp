@@ -1,9 +1,12 @@
+<<<<<<< HEAD
 ///|/ Copyright (c) Prusa Research 2017 - 2023 Oleksandra Iushchenko @YuSanka, Lukáš Matěna @lukasmatena, Vojtěch Bubník @bubnikv, David Kocík @kocikdav, Enrico Turri @enricoturri1966, Filip Sykala @Jony01, Vojtěch Král @vojtechkral, Tomáš Mészáros @tamasmeszaros
 ///|/ Copyright (c) 2020 Pascal de Bruijn @pmjdebruijn
 ///|/ Copyright (c) 2018 - 2020 Martin Loidl @LoidlM
 ///|/
 ///|/ PrusaSlicer is released under the terms of the AGPLv3 or higher
 ///|/
+=======
+>>>>>>> origin/master
 #include "Field.hpp"
 
 #include "libslic3r/PresetBundle.hpp"
@@ -11,7 +14,10 @@
 
 #include "BitmapComboBox.hpp"
 #include "format.hpp"
+<<<<<<< HEAD
 #include "GraphDialog.hpp"
+=======
+>>>>>>> origin/master
 #include "GUI.hpp"
 #include "GUI_App.hpp"
 #include "I18N.hpp"
@@ -22,8 +28,11 @@
 #include "wxExtensions.hpp"
 
 #include <regex>
+<<<<<<< HEAD
 #include "libslic3r/enum_bitmask.hpp"
 #include "libslic3r/GCode/Thumbnails.hpp"
+=======
+>>>>>>> origin/master
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -38,8 +47,11 @@
 #include <wx/tglbtn.h>
 #endif
 #include <wx/tokenzr.h>
+<<<<<<< HEAD
 
 #include "Widgets/ComboBox.hpp"
+=======
+>>>>>>> origin/master
 
 #ifdef __WXOSX__
 #define wxOSX true

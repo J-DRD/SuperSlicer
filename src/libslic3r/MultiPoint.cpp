@@ -109,7 +109,10 @@ bool MultiPoint::remove_duplicate_points()
 }
 
 // Projection of a point onto the polygon.
+<<<<<<< HEAD
 //FIXME: delete this, it's moved somewhere.
+=======
+>>>>>>> origin/master
 std::pair<Point, size_t> MultiPoint::point_projection(const Point &point) const {
     size_t pt_idx = size_t(-1);
     Point proj = point;

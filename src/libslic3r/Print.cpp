@@ -53,6 +53,12 @@
 #include <boost/regex.hpp>
 
 #include <tbb/parallel_for.h>
+<<<<<<< HEAD
+=======
+
+// Mark string for localization and translate.
+#define L(s) Slic3r::I18N::translate(s)
+>>>>>>> origin/master
 
 namespace Slic3r {
 

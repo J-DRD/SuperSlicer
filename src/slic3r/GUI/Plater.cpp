@@ -435,9 +435,14 @@ void FreqChangedParams::init()
             m_og->set_config(config);
             m_og->hide_labels();
             m_og->m_on_change =
+<<<<<<< HEAD
                 Tab::set_or_add(m_og->m_on_change, [tab_freq_fff, this](t_config_option_key opt_key, bool enabled, boost::any value)
                                 {
                                     assert(enabled); //TODO fix & test
+=======
+                Tab::set_or_add(m_og->m_on_change, [tab_freq_fff, this](t_config_option_key opt_key, boost::any value)
+                                {
+>>>>>>> origin/master
                                     const Option *opt_def = this->m_og->get_option_def(opt_key);
                                     if (opt_def && !opt_def->opt.is_script) {
                                         tab_freq_fff->update_dirty();
@@ -466,7 +471,11 @@ void FreqChangedParams::init()
                 auto wiping_dialog_btn = [this](wxWindow *parent) {
                     m_wiping_dialog_button = new wxButton(parent, wxID_ANY, _L("Purging volumes") + dots,
                                                           wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+<<<<<<< HEAD
                     wxGetApp().SetWindowVariantForButton(m_wiping_dialog_button);
+=======
+                    m_wiping_dialog_button->SetFont(wxGetApp().normal_font());
+>>>>>>> origin/master
                     wxGetApp().UpdateDarkUI(m_wiping_dialog_button, true);
 
                     auto sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -475,9 +484,15 @@ void FreqChangedParams::init()
                         ->Bind(wxEVT_BUTTON, ([parent](wxCommandEvent &e) {
                                    auto &project_config = wxGetApp().preset_bundle->project_config;
                                    const std::vector<double> &init_matrix =
+<<<<<<< HEAD
                                        (project_config.option<ConfigOptionFloats>("wiping_volumes_matrix"))->get_values();
                                    const std::vector<double> &init_extruders =
                                        (project_config.option<ConfigOptionFloats>("wiping_volumes_extruders"))->get_values();
+=======
+                                       (project_config.option<ConfigOptionFloats>("wiping_volumes_matrix"))->values;
+                                   const std::vector<double> &init_extruders =
+                                       (project_config.option<ConfigOptionFloats>("wiping_volumes_extruders"))->values;
+>>>>>>> origin/master
 
                                    const std::vector<std::string> extruder_colours =
                                        wxGetApp().plater()->get_extruder_colors_from_plater_config();
@@ -488,16 +503,27 @@ void FreqChangedParams::init()
                                    if (dlg.ShowModal() == wxID_OK) {
                                        std::vector<float> matrix    = dlg.get_matrix();
                                        std::vector<float> extruders = dlg.get_extruders();
+<<<<<<< HEAD
                                        (project_config.option<ConfigOptionFloats>("wiping_volumes_matrix"))->set(
                                            std::vector<double>(matrix.begin(), matrix.end()));
                                        (project_config.option<ConfigOptionFloats>("wiping_volumes_extruders"))->set(
                                           std::vector<double>(extruders.begin(), extruders.end()));
+=======
+                                       (project_config.option<ConfigOptionFloats>("wiping_volumes_matrix"))->values =
+                                           std::vector<double>(matrix.begin(), matrix.end());
+                                       (project_config.option<ConfigOptionFloats>("wiping_volumes_extruders"))
+                                           ->values = std::vector<double>(extruders.begin(), extruders.end());
+>>>>>>> origin/master
                                        wxGetApp().plater()->update_project_dirty_from_presets();
                                        wxPostEvent(parent, SimpleEvent(EVT_SCHEDULE_BACKGROUND_PROCESS, parent));
                                    }
                                }));
 
+<<<<<<< HEAD
                     auto btn = new ScalableButton(parent, wxID_ANY, "mirroring_transparent", wxEmptyString,
+=======
+                    auto btn = new ScalableButton(parent, wxID_ANY, "mirroring_transparent.png", wxEmptyString,
+>>>>>>> origin/master
                                                   wxDefaultSize, wxDefaultPosition,
                                                   wxBU_EXACTFIT | wxNO_BORDER | wxTRANSPARENT_WINDOW);
                     sizer->Add(btn, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, int(0.3 * wxGetApp().em_unit()));
@@ -532,9 +558,13 @@ void FreqChangedParams::init()
             m_og_sla->hide_labels();
             m_og_sla->m_on_change = Tab::set_or_add(m_og_sla->m_on_change, [tab_freq_sla,
                                                                             this](t_config_option_key opt_key,
+<<<<<<< HEAD
                                                                                   bool                enabled,
                                                                                   boost::any          value) {
                 assert(enabled);
+=======
+                                                                                  boost::any          value) {
+>>>>>>> origin/master
                 Option opt = this->m_og_other[ptSLA]->create_option_from_def(opt_key);
                 if (!opt.opt.is_script) {
                     tab_freq_sla->update_dirty();
@@ -1296,6 +1326,13 @@ void Sidebar::jump_to_option(size_t selected)
         wxGetApp().get_tab(opt.type, false)->activate_option(opt.opt_key_with_idx(), boost::nowide::narrow(opt.category));
     }
 
+<<<<<<< HEAD
+=======
+    wxGetApp().get_tab(opt.type, false)->activate_option(opt.opt_key_with_idx(), boost::nowide::narrow(opt.category));
+
+    // Switch to the Settings NotePad
+//    wxGetApp().mainframe->select_tab(MainFrame::ETabType::LastSettings);
+>>>>>>> origin/master
 }
 
 ObjectManipulation* Sidebar::obj_manipul()
@@ -1479,6 +1516,7 @@ void Sidebar::update_sliced_info_sizer()
             // if multiple filament/extruders, then print them all
             if (ps.filament_stats.size() > 1 || ps.color_extruderid_to_used_filament.size() > 0) {
                 new_label += ":";
+<<<<<<< HEAD
                 const std::vector<ExtruderFilaments>& filament_presets = wxGetApp().preset_bundle->extruders_filaments;
                 const PresetCollection& filaments = wxGetApp().preset_bundle->filaments;
                 //for each extruder
@@ -1486,6 +1524,15 @@ void Sidebar::update_sliced_info_sizer()
                     int items_printed = 0;
                     double total_length = 0;
                     const Preset* filament_preset = filaments.find_preset(filament_presets[filament_id].get_selected_preset_name(), false);
+=======
+                const std::vector<std::string>& filament_presets = wxGetApp().preset_bundle->filament_presets;
+                const PresetCollection& filaments = wxGetApp().preset_bundle->filaments;
+                //for each extruder
+                for (auto [filament_id, filament_volume] : ps.filament_stats) {
+                    int items_printed = 0;
+                    double total_length = 0;
+                    const Preset* filament_preset = filaments.find_preset(filament_presets[filament_id], false);
+>>>>>>> origin/master
                     if (filament_preset) {
                         double crosssection = 0.5 * filament_preset->config.opt_float("filament_diameter", filament_id);
                         crosssection *= crosssection * PI;
@@ -1503,11 +1550,19 @@ void Sidebar::update_sliced_info_sizer()
                         if (items_printed == 0) {
                             new_label += "\n    - " + format_wxstr(_L("Filament at extruder %1%"), filament_id + 1);
                             //new_label += from_u8((boost::format("\n    - %1% %2%") % _utf8(L("Color")) % ps.color_extruderid_to_used_filament.size()).str());
+<<<<<<< HEAD
                             info_text += wxString::Format("\n%.2f", filament_vol * mm3_to_m);
                         } 
                         else {
                             new_label += "\n    - " + format_wxstr(_L("Color %1% at extruder %2%"), (items_printed+1), (filament_id + 1));
                             info_text += wxString::Format("\n%.2f (%.2f)", (filament_vol - total_length) * mm3_to_m, filament_vol * mm3_to_m);
+=======
+                            info_text += wxString::Format("\n%.2f", filament_volume * mm3_to_m);
+                        } 
+                        else {
+                            new_label += "\n    - " + format_wxstr(_L("Color %1% at extruder %2%"), (items_printed+1), (filament_id + 1));
+                            info_text += wxString::Format("\n%.2f (%.2f)", (filament_volume - total_length) * mm3_to_m, filament_volume * mm3_to_m);
+>>>>>>> origin/master
                         }
                     }
                 }
@@ -1532,6 +1587,7 @@ void Sidebar::update_sliced_info_sizer()
                     new_label += ":";
 
                     //for each extruder
+<<<<<<< HEAD
                     for (const auto& [filament_id, filament_vol] : ps.filament_stats) {
                         assert(filament_id < extruders_filaments.size());
                         if (const Preset* filament_preset = extruders_filaments[filament_id].get_selected_preset()) {
@@ -1540,6 +1596,15 @@ void Sidebar::update_sliced_info_sizer()
                             double crosssection = filament_preset->config.opt_float("filament_diameter", filament_id);
                             crosssection *= crosssection;
                             crosssection *= 0.25 * PI;
+=======
+                    for (auto [filament_id, filament_volume] : ps.filament_stats) {
+                        const Preset* filament_preset = filaments.find_preset(filament_presets[filament_id], false);
+                        if (filament_preset) {
+                            double spool_weight = filament_preset->config.opt_float("filament_spool_weight", 0);
+                            double filament_density = filament_preset->config.opt_float("filament_density", filament_id);
+                            double crosssection = 0.5 * filament_preset->config.opt_float("filament_diameter", filament_id);
+                            crosssection *= crosssection * PI;
+>>>>>>> origin/master
                             double m_to_g = filament_density / (crosssection * 1000);
                             double mm3_to_g = filament_density *0.001;
                             int items_printed = 0;
@@ -1566,6 +1631,7 @@ void Sidebar::update_sliced_info_sizer()
                             if (items_printed == 0) {
                                 new_label += "\n    - " + format_wxstr(_L("Filament at extruder %1%"), filament_id + 1);
                                 //new_label += from_u8((boost::format("\n    - %1% %2%") % _utf8(L("Color")) % ps.color_extruderid_to_used_filament.size()).str());
+<<<<<<< HEAD
                                 info_text += wxString::Format("\n%.2f", filament_vol * mm3_to_g);
                                 if (spool_weight != 0.0)
                                     info_text += wxString::Format(" (%.2f)", filament_vol * mm3_to_g + spool_weight);
@@ -1574,6 +1640,16 @@ void Sidebar::update_sliced_info_sizer()
                                 info_text += wxString::Format("\n%.2f", (filament_vol - total_length) * mm3_to_g);
                                 if (spool_weight != 0.0)
                                     info_text += wxString::Format(" (%.2f)", (filament_vol - total_length) * mm3_to_g + spool_weight);
+=======
+                                info_text += wxString::Format("\n%.2f", filament_volume * mm3_to_g);
+                                if (spool_weight != 0.0)
+                                    info_text += wxString::Format(" (%.2f)", filament_volume * mm3_to_g + spool_weight);
+                            } else {
+                                new_label += "\n    - " + format_wxstr(_L("Color %1% at extruder %2%"), (items_printed + 1), (filament_id + 1));
+                                info_text += wxString::Format("\n%.2f", (filament_volume - total_length) * mm3_to_g);
+                                if (spool_weight != 0.0)
+                                    info_text += wxString::Format(" (%.2f)", (filament_volume - total_length) * mm3_to_g + spool_weight);
+>>>>>>> origin/master
                             }
                         }
                     }
@@ -2796,7 +2872,54 @@ std::vector<size_t> Plater::priv::load_files(const std::vector<fs::path>& input_
                         Preset::normalize(config);
                         PresetBundle* preset_bundle = wxGetApp().preset_bundle.get();
                         preset_bundle->load_config_model(filename.string(), std::move(config));
+<<<<<<< HEAD
                         q->notify_about_installed_presets();
+=======
+                        {
+                            // After loading of the presets from project, check if they are visible.
+                            // Set them to visible if they are not.
+
+                            auto update_selected_preset_visibility = [](PresetCollection& presets, std::vector<std::string>& names) {
+                                if (!presets.get_selected_preset().is_visible) {
+                                    assert(presets.get_selected_preset().name == presets.get_edited_preset().name);
+                                    presets.get_selected_preset().is_visible = true;
+                                    presets.get_edited_preset().is_visible = true;
+                                    names.emplace_back(presets.get_selected_preset().name);
+                                }
+                            };
+
+                            std::vector<std::string> names;
+                            if (loaded_printer_technology == ptFFF) {
+                                update_selected_preset_visibility(preset_bundle->fff_prints, names);
+                                for (const std::string& filament : preset_bundle->filament_presets) {
+                                    Preset* preset = preset_bundle->filaments.find_preset(filament);
+                                    if (preset && !preset->is_visible) {
+                                        preset->is_visible = true;
+                                        names.emplace_back(preset->name);
+                                        if (preset->name == preset_bundle->filaments.get_edited_preset().name)
+                                            preset_bundle->filaments.get_selected_preset().is_visible = true;
+                                    }
+                                }
+                            }
+                            else {
+                                update_selected_preset_visibility(preset_bundle->sla_prints, names);
+                                update_selected_preset_visibility(preset_bundle->sla_materials, names);
+                            }
+                            update_selected_preset_visibility(preset_bundle->printers, names);
+
+                            preset_bundle->update_compatible(PresetSelectCompatibleType::Never);
+
+                            // show notification about temporarily installed presets
+                            if (!names.empty()) {
+                                std::string notif_text = into_u8(format_wxstr(_L_PLURAL("The preset below was temporarily installed on the active instance of %1%",
+                                                                           "The presets below were temporarily installed on the active instance of %1%", names.size()), SLIC3R_APP_NAME)) + ":";
+                                for (std::string& name : names)
+                                    notif_text += "\n - " + name;
+                                notification_manager->push_notification(NotificationType::CustomNotification,
+                                    NotificationManager::NotificationLevel::PrintInfoNotificationLevel, notif_text);
+                            }
+                        }
+>>>>>>> origin/master
 
                         if (loaded_printer_technology == ptFFF)
                             CustomGCode::update_custom_gcode_per_print_z_from_config(model.custom_gcode_per_print_z, &preset_bundle->project_config);

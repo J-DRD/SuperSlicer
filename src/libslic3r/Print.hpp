@@ -594,7 +594,10 @@ struct PrintStatistics
     std::string                     initial_filament_type;
     std::string                     printing_filament_types;
     std::map<size_t, double>        filament_stats; // extruder id -> volume in mm3
+<<<<<<< HEAD
     std::vector<std::pair<double, float>> layer_area_stats; // print_z to area
+=======
+>>>>>>> origin/master
 
     std::atomic_bool is_computing_gcode;
 

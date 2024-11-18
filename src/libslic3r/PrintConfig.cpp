@@ -5423,6 +5423,7 @@ void PrintConfigDef::init_fff_params()
     def->min = 0;
     def->mode = comExpert | comPrusa;
     def->set_default_value(new ConfigOptionFloat(4));
+<<<<<<< HEAD
 
     def = this->add("solid_infill_below_layer_area", coFloat);
     def->label = L("Solid infill layer threshold area");
@@ -5443,6 +5444,8 @@ void PrintConfigDef::init_fff_params()
     def->min = 0;
     def->mode = comExpert | comSuSi;
     def->set_default_value(new ConfigOptionFloatOrPercent(0, false));
+=======
+>>>>>>> origin/master
 
     def = this->add("solid_infill_overlap", coPercent);
     def->label = L("Solid infill overlap");
@@ -5626,7 +5629,11 @@ void PrintConfigDef::init_fff_params()
     def->tooltip = L("Ensure that the slicer won't add heating, fan, extruder... commands before or just after your start-gcode."
                     "\nIf set to true, you have to write a good and complete start_gcode, as no checks are made anymore."
                     "\nExemple:\nG21 ; set units to millimeters\nG90 ; use absolute coordinates\n{if use_relative_e_distances}M83{else}M82{endif}\nG92 E0 ; reset extrusion distance");
+<<<<<<< HEAD
     def->mode = comExpert | comSuSi;
+=======
+    def->mode = comExpert | comPrusa;
+>>>>>>> origin/master
     def->set_default_value(new ConfigOptionBool(false));
 
     def = this->add("start_filament_gcode", coStrings);
@@ -8571,12 +8578,24 @@ void PrintConfigDef::handle_legacy(t_config_option_key &opt_key, std::string &va
     // some changes has occurs between rectilineargapfill and monotonicgapfill. Set them at the right value for each type
     if (value == "rectilineargapfill" && (opt_key == "top_fill_pattern" || opt_key == "bottom_fill_pattern") )
         value = "monotonicgapfill";
+<<<<<<< HEAD
     if (opt_key == "fill_pattern" || opt_key == "support_material_interface_pattern" || opt_key == "support_material_top_interface_pattern" || opt_key == "support_material_bottom_interface_pattern") {
         if (value == "rectilineargapfill") {
             value = "rectilinear";
         } else if (value == "monotonicgapfill") {
             value = "monotonic";
         }
+=======
+    if (opt_key == "fill_pattern" || opt_key == "support_material_interface_pattern")
+        if (value == "rectilineargapfill")
+            value = "rectilinear";
+        else if (value == "monotonicgapfill")
+            value = "monotonic";
+
+    if (ignore.find(opt_key) != ignore.end()) {
+        opt_key = "";
+        return;
+>>>>>>> origin/master
     }
     //in ps 2.4, the raft_first_layer_density is now more powerful than the support_material_solid_first_layer, also it always does the perimeter.
     if ("support_material_solid_first_layer" == opt_key) {
@@ -9507,7 +9526,10 @@ std::unordered_set<std::string> prusa_export_to_remove_keys = {
 "solid_infill_fan_speed",
 "solid_infill_overlap",
 "start_gcode_manual",
+<<<<<<< HEAD
 "solid_infill_below_layer_area",
+=======
+>>>>>>> origin/master
 "solid_infill_below_width",
 "support_material_angle_height",
 "support_material_acceleration",
@@ -9634,8 +9656,12 @@ std::map<std::string, std::string> PrintConfigDef::to_prusa(t_config_option_key&
             // can't support %, so we uese the default accel a baseline for half-assed conversion
             value = std::to_string(all_conf.get_abs_value(opt_key, all_conf.get_computed_value("default_acceleration")));
         }
+<<<<<<< HEAD
     } else if ("infill_acceleration" == opt_key || "solid_infill_acceleration" == opt_key || "top_solid_infill_acceleration" == opt_key
         || "bridge_acceleration" == opt_key || "default_acceleration" == opt_key || "perimeter_acceleration" == opt_key
+=======
+    } else if ("infill_acceleration" == opt_key || "bridge_acceleration" == opt_key || "default_acceleration" == opt_key || "perimeter_acceleration" == opt_key
+>>>>>>> origin/master
         || "overhangs_speed" == opt_key || "ironing_speed" == opt_key || "perimeter_speed" == opt_key 
         || "infill_speed" == opt_key || "bridge_speed" == opt_key || "support_material_speed" == opt_key
         || "max_print_speed" == opt_key
@@ -9852,6 +9878,21 @@ std::map<std::string, std::string> PrintConfigDef::to_prusa(t_config_option_key&
     if ("bridge_angle" == opt_key && !value.empty() && value.front() == '!') {
         value = "0";
     }
+
+    // compute max & min height from % to flat value
+    if ("min_layer_height" == opt_key || "max_layer_height" == opt_key) {
+        ConfigOptionFloats computed_opt;
+        const ConfigOptionFloatsOrPercents *current_opt = all_conf.option<ConfigOptionFloatsOrPercents>(opt_key);
+        const ConfigOptionFloats *nozzle_diameters = all_conf.option<ConfigOptionFloats>("nozzle_diameter");
+        assert(current_opt && nozzle_diameters);
+        assert(current_opt->size() == nozzle_diameters->size());
+        for (int i = 0; i < current_opt->size(); i++) {
+            computed_opt.set_at(current_opt->get_abs_value(i, nozzle_diameters->get_at(i)), i);
+        }
+        assert(computed_opt.size() == nozzle_diameters->size());
+        value = computed_opt.serialize();
+    }
+    
 
     // ---- custom gcode: ----
     static const std::vector<std::pair<std::string, std::string>> custom_gcode_replace =

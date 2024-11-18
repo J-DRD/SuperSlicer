@@ -111,8 +111,13 @@ template void BoundingBoxBase<Point, Points>::merge(const BoundingBoxBase<Point,
 template void BoundingBoxBase<Vec2f>::merge(const BoundingBoxBase<Vec2f> &bb);
 template void BoundingBoxBase<Vec2d>::merge(const BoundingBoxBase<Vec2d> &bb);
 
+<<<<<<< HEAD
 template <class PointClass, typename APointsType>
 bool BoundingBoxBase<PointClass, APointsType>::cross(const Line &line) const
+=======
+template <class PointClass>
+bool BoundingBoxBase<PointClass>::cross(const Line &line) const
+>>>>>>> origin/master
 {
     assert(this->defined || this->min.x() >= this->max.x() || this->min.y() >= this->max.y());
     // first just check if one point is inside and the other outside
@@ -129,10 +134,17 @@ bool BoundingBoxBase<PointClass, APointsType>::cross(const Line &line) const
         cross = Line(Point(this->max.x(), this->max.y()), Point(this->max.x(), this->min.y())).intersection(line, &intersect);
     return cross;
 }
+<<<<<<< HEAD
 template bool BoundingBoxBase<Point, Points>::cross(const Line &line) const;
 
 template <class PointClass, typename APointsType>
 bool BoundingBoxBase<PointClass, APointsType>::cross(const Polyline &lines) const
+=======
+template bool BoundingBoxBase<Point>::cross(const Line &line) const;
+
+template <class PointClass>
+bool BoundingBoxBase<PointClass>::cross(const Polyline &lines) const
+>>>>>>> origin/master
 {
     assert(this->defined || this->min.x() >= this->max.x() || this->min.y() >= this->max.y());
     // first just check if one point is inside and the other outside
@@ -162,10 +174,17 @@ bool BoundingBoxBase<PointClass, APointsType>::cross(const Polyline &lines) cons
     }
     return false;
 }
+<<<<<<< HEAD
 template bool BoundingBoxBase<Point, Points>::cross(const Polyline &lines) const;
 
 template <class PointType> void
 BoundingBox3Base<PointType>::merge(const PointType &point)
+=======
+template bool BoundingBoxBase<Point>::cross(const Polyline &lines) const;
+
+template <class PointClass> void
+BoundingBox3Base<PointClass>::merge(const PointClass &point)
+>>>>>>> origin/master
 {
     if (this->defined) {
         this->min = this->min.cwiseMin(point);

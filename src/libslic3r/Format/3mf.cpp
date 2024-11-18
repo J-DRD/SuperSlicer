@@ -2115,6 +2115,7 @@ namespace Slic3r {
         } else if (m_curr_metadata_name == SLIC3RPE_FDM_SUPPORTS_PAINTING_VERSION) {
             m_fdm_supports_painting_version = (unsigned int) atoi(m_curr_characters.c_str());
             check_painting_version(m_fdm_supports_painting_version, FDM_SUPPORTS_PAINTING_VERSION,
+<<<<<<< HEAD
                 (boost::format(_u8L("The selected 3MF contains FDM supports painted object using a newer version of %1% and is not compatible.")) % SLIC3R_APP_NAME).str());
         } else if (m_curr_metadata_name == SLIC3RPE_SEAM_PAINTING_VERSION) {
             m_seam_painting_version = (unsigned int) atoi(m_curr_characters.c_str());
@@ -2124,6 +2125,17 @@ namespace Slic3r {
             m_mm_painting_version = (unsigned int) atoi(m_curr_characters.c_str());
             check_painting_version(m_mm_painting_version, MM_PAINTING_VERSION,
                 (boost::format(_u8L("The selected 3MF contains multi-material painted object using a newer version of %1% and is not compatible.")) % SLIC3R_APP_NAME).str());
+=======
+                _(L("The selected 3MF contains FDM supports painted object using a newer version of the slicer and is not compatible.")));
+        } else if (m_curr_metadata_name == SLIC3RPE_SEAM_PAINTING_VERSION) {
+            m_seam_painting_version = (unsigned int) atoi(m_curr_characters.c_str());
+            check_painting_version(m_seam_painting_version, SEAM_PAINTING_VERSION,
+                _(L("The selected 3MF contains seam painted object using a newer version of the slicer and is not compatible.")));
+        } else if (m_curr_metadata_name == SLIC3RPE_MM_PAINTING_VERSION) {
+            m_mm_painting_version = (unsigned int) atoi(m_curr_characters.c_str());
+            check_painting_version(m_mm_painting_version, MM_PAINTING_VERSION,
+                _(L("The selected 3MF contains multi-material painted object using a newer version of the slicer and is not compatible.")));
+>>>>>>> origin/master
         }
 
         return true;

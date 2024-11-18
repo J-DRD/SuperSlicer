@@ -18,6 +18,12 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
+<<<<<<< HEAD
+=======
+
+// Mark string for localization and translate.
+#define L(s) Slic3r::I18N::translate(s)
+>>>>>>> origin/master
 
 namespace Slic3r {
 

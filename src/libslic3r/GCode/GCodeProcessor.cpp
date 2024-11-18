@@ -1109,7 +1109,11 @@ void GCodeProcessor::reset()
     m_result.id = ++s_result_id;
     // 1st move must be a dummy move
     assert(m_result.moves.empty());
+<<<<<<< HEAD
     initialize_result_moves();
+=======
+    m_result.moves.emplace_back();
+>>>>>>> origin/master
     m_has_reset = true;
 
     m_use_volumetric_e = false;
