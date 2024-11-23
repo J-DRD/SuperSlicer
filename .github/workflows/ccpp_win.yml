@@ -11,6 +11,7 @@ on:
       - debug_win
       - rcx
       - master
+      - main
       - add-velocity-extrusion
 
 jobs:
